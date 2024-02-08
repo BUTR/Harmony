@@ -17,7 +17,7 @@ jobs:
           { os: ubuntu, architecture: x86, image: ubuntu-latest },
           { os: ubuntu, architecture: x64, image: ubuntu-latest },
           { os: macos, architecture: x64, image: macos-13-large },
-          #{ os: macos, architecture: arm64, image: macos-13-xlarge },
+          { os: macos, architecture: arm64, image: macos-13-xlarge },
         ]
         #runtimeType: [
         #  { framework: { code: net35, name: .NET 3.5 } },
@@ -44,13 +44,23 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup .NET
+      - name: Setup .NET Ubuntu/Windows/OSX x64
+        if: ${{ matrix.agent.os.ubuntu || matrix.agent.os.windows || (matrix.agent.os.macos && matrix.agent.architecture.x64) }}
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: |
             3.0.x
             3.1.x
             5.0.x
+            6.0.x
+            7.0.x
+            8.0.x
+            
+      - name: Setup .NET OSX Arm64
+        if: ${{ matrix.agent.os.macos && matrix.agent.architecture.arm64 }}
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: |
             6.0.x
             7.0.x
             8.0.x

@@ -24,7 +24,6 @@ jobs:
         agent: [
           { os: 'windows', architecture: 'x86', image: 'windows-latest' },
           { os: 'windows', architecture: 'x64', image: 'windows-latest' },
-          { os: 'ubuntu', architecture: 'x86', image: 'ubuntu-latest' },
           { os: 'ubuntu', architecture: 'x64', image: 'ubuntu-latest' },
           { os: 'macos', architecture: 'x64', image: 'macos-13-large' },
           { os: 'macos', architecture: 'arm64', image: 'macos-13-xlarge' },
@@ -62,8 +61,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup .NET Ubuntu/Windows x86
-        if: matrix.agent.architecture == 'x86'
+      - name: Setup .NET Windows x86
+        if: matrix.agent.os == 'windows' && matrix.agent.architecture == 'x86'
         uses: dlemstra/setup-dotnet@add-architecture-option
         with:
           dotnet-version: |

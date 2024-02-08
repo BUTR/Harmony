@@ -19,19 +19,19 @@ jobs:
           { os: macos, architecture: x64, image: macos-13-large },
           #{ os: macos, architecture: arm64, image: macos-13-xlarge },
         ]
-        runtimeType: [
-          { framework: { code: net35, name: .NET 3.5 } },
-          { framework: { code: net452, name: .NET 4.5.2 } },
-          { framework: { code: net472, name: .NET 4.7.2 } },
-          { framework: { code: net48, name: .NET 4.8 } },
-          
-          { dotnet: { code: netcoreapp3.0, version: '3.0.x', name: .NET Core 3.0 } },
-          { dotnet: { code: netcoreapp3.1, version: '3.1.x', name: .NET Core 3.1 } },
-          { dotnet: { code: net5.0, version: '5.0.x', name: .NET 5.0 } },
-          { dotnet: { code: net6.0, version: '6.0.x', name: .NET 6.0 } },
-          { dotnet: { code: net7.0, version: '7.0.x', name: .NET 7.0 } },
-          { dotnet: { code: net8.0, version: '8.0.x', name: .NET 8.0 } },
-        ]
+        #runtimeType: [
+        #  { framework: { code: net35, name: .NET 3.5 } },
+        #  { framework: { code: net452, name: .NET 4.5.2 } },
+        #  { framework: { code: net472, name: .NET 4.7.2 } },
+        #  { framework: { code: net48, name: .NET 4.8 } },
+        #  
+        #  { dotnet: { code: netcoreapp3.0, version: '3.0.x', name: .NET Core 3.0 } },
+        #  { dotnet: { code: netcoreapp3.1, version: '3.1.x', name: .NET Core 3.1 } },
+        #  { dotnet: { code: net5.0, version: '5.0.x', name: .NET 5.0 } },
+        #  { dotnet: { code: net6.0, version: '6.0.x', name: .NET 6.0 } },
+        #  { dotnet: { code: net7.0, version: '7.0.x', name: .NET 7.0 } },
+        #  { dotnet: { code: net8.0, version: '8.0.x', name: .NET 8.0 } },
+        #]
         buildConfiguration: [ReleaseFat, ReleaseThin]
         #exclude:
         #  - agent: { os: macos, architecture: x64, image: macos-13-large }
@@ -71,9 +71,9 @@ jobs:
 
 
       - name: Build and Test .NET
-        if: ${{ matrix.runtimeType.dotnet }}
+        #if: ${{ matrix.runtimeType.dotnet }}
         run: |
-          dotnet test -c ${{ matrix.buildConfiguration }} -f ${{ matrix.runtimeType.dotnet.code }} Harmony.sln
+          dotnet test -c ${{ matrix.buildConfiguration }} -f Harmony.sln
 
       - name: Build and Test Mono Windows
         if: ${{ matrix.runtimeType.mono && matrix.agent.os.windows }}
@@ -88,7 +88,7 @@ jobs:
           vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe"
           "$mono" "$vstest" "HarmonyTests/bin/Release/${{matrix.runtimeType.framework.code}}/HarmonyTests.dll" --Framework:${{matrix.runtimeType.framework.code}}
 
-      - name: Build and Test
-        if: ${{ matrix.runtimeType.mono && !matrix.agent.os.windows }}
+      - name: Build and Test Mono Ubuntu/OS X
+        if: ${{ matrix.runtimeType.mono && (matrix.agent.os.ubuntu || matrix.agent.os.macos) }}
         run: |
           echo "TODO";

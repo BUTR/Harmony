@@ -21,20 +21,8 @@ jobs:
     env:
       run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{inputs.architecture}}'
     steps:
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v2
-        with:
-          msbuild-architecture: ${{inputs.architecture}}
-    
-      - name: Setup NuGet
-        uses: NuGet/setup-nuget@v2
-
-      - name: Restore Packages
-        run: nuget restore Harmony.sln
-    
-      - name: Build solution
-        run: msbuild Harmony.sln -t:rebuild -property:Configuration=${{inputs.build_configuration}}
-        
+      - uses: actions/checkout@v2
+     
       - name: Build
         run: |
           dotnet build -c ${{inputs.build_configuration}} --framework ${{inputs.target_framework}} Harmony.sln

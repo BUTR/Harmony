@@ -21,6 +21,8 @@ jobs:
     env:
       run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{inputs.architecture}}'
     steps:
+      - uses: actions/checkout@v2
+    
       - name: Setup Mono x86
         if: inputs.architecture == 'x86'
         run: |

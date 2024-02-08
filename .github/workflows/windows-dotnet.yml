@@ -15,7 +15,7 @@ on:
 
 jobs:
   windows-net:
-    name: Windows .NET
+    name: .NET Windows-${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
     runs-on: windows-latest
     continue-on-error: true
     env:

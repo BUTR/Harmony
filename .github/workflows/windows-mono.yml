@@ -15,7 +15,7 @@ on:
 
 jobs:
   windows-mono:
-    name: Windows Mono
+    name: Mono Windows-${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
     runs-on: windows-latest
     continue-on-error: true
     env:
@@ -32,6 +32,10 @@ jobs:
         run: |
           curl -L https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0.199-x64-0.msi -o mono.msi
           msiexec /i mono.msi /quiet
+
+      - name: Build
+        run: |
+          dotnet build -c ${{inputs.build_configuration}} --framework ${{inputs.target_framework}} Harmony.sln
 
       - name: Test Mono
         run: |

@@ -20,7 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		_config.yml = _config.yml
 		.github\workflows\test.yml = .github\workflows\test.yml
 		.github\workflows\windows-mono.yml = .github\workflows\windows-mono.yml
-		.github\workflows\windows-net.yml = .github\workflows\windows-net.yml
+		.github\workflows\windows-dotnet.yml = .github\workflows\windows-dotnet.yml
+		.github\workflows\windows-framework.yml = .github\workflows\windows-framework.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony", "Harmony\Harmony.csproj", "{69AEE16A-B6E7-4642-8081-3928B32455DF}"

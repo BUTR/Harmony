@@ -19,14 +19,26 @@ jobs:
     strategy:
       matrix:
         architecture: ['x86', 'x64']
-        target_framework: ['net35', 'net452', 'net472', 'net48', 'netcoreapp3.0', 'netcoreapp3.1', 'net5.0', 'net6.0', 'net7.0', 'net8.0']
+        target_framework: ['netcoreapp3.0', 'netcoreapp3.1', 'net5.0', 'net6.0', 'net7.0', 'net8.0']
         build_configuration: ['ReleaseFat', 'ReleaseThin']
-    uses: ./.github/workflows/windows-net.yml
+    uses: ./.github/workflows/windows-dotnet.yml
     with:
       architecture: ${{ matrix.architecture }}
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
-      
+
+  windows-framework:
+    strategy:
+      matrix:
+        architecture: ['x86', 'x64']
+        target_framework: ['net35', 'net452', 'net472', 'net48']
+        build_configuration: ['ReleaseFat', 'ReleaseThin']
+    uses: ./.github/workflows/windows-framework.yml
+    with:
+      architecture: ${{ matrix.architecture }}
+      target_framework: ${{ matrix.target_framework }}
+      build_configuration: ${{ matrix.build_configuration }}
+
   windows-mono:
     strategy:
       matrix:

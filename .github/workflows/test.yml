@@ -62,9 +62,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup .NET Ubuntu/Windows/OSX x64
-        if: matrix.agent.os == 'ubuntu' || matrix.agent.os == 'windows' || (matrix.agent.os == 'macos' && matrix.agent.architecture == 'x64')
-        uses: actions/setup-dotnet@v1
+      - name: Setup .NET Ubuntu/Windows x86
+        if: matrix.agent.architecture == 'x86'
+        uses: dlemstra/setup-dotnet@add-architecture-option
         with:
           dotnet-version: |
             3.0.x
@@ -73,15 +73,55 @@ jobs:
             6.0.x
             7.0.x
             8.0.x
-            
-      - name: Setup .NET OSX Arm64
+          dotnet-architecture: x86
+
+      - name: Setup .NET Ubuntu/Windows/OSX x64
+        if: matrix.agent.architecture == 'x64'
+        uses: dlemstra/setup-dotnet@add-architecture-option
+        with:
+          dotnet-version: |
+            3.0.x
+            3.1.x
+            5.0.x
+            6.0.x
+            7.0.x
+            8.0.x
+          dotnet-architecture: x64
+
+      - name: Setup .NET Ubuntu arm64
+        if: matrix.agent.os == 'ubuntu' && matrix.agent.architecture == 'arm64'
+        uses: dlemstra/setup-dotnet@add-architecture-option
+        with:
+          dotnet-version: |
+            3.0.x
+            3.1.x
+            5.0.x
+            6.0.x
+            7.0.x
+            8.0.x
+          dotnet-architecture: arm64
+
+      - name: Setup .NET Windows arm64
+        if: matrix.agent.os == 'windows' && matrix.agent.architecture == 'arm64'
+        uses: dlemstra/setup-dotnet@add-architecture-option
+        with:
+          dotnet-version: |
+            5.0.x
+            6.0.x
+            7.0.x
+            8.0.x
+          dotnet-architecture: arm64
+
+      - name: Setup .NET OSX arm64
         if: matrix.agent.os == 'macos' && matrix.agent.architecture == 'arm64'
-        uses: actions/setup-dotnet@v1
+        uses: dlemstra/setup-dotnet@add-architecture-option
         with:
           dotnet-version: |
             6.0.x
             7.0.x
             8.0.x
+          dotnet-architecture: arm64
+
 
       - name: Setup Mono Windows x86
         if: matrix.agent.os == 'windows' && matrix.agent.architecture == 'x86'

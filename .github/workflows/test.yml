@@ -17,7 +17,7 @@ jobs:
           { os: ubuntu, architecture: x86, image: ubuntu-latest },
           { os: ubuntu, architecture: x64, image: ubuntu-latest },
           { os: macos, architecture: x64, image: macos-13-large },
-          { os: macos, architecture: arm64, image: macos-13-xlarge }
+          #{ os: macos, architecture: arm64, image: macos-13-xlarge },
         ]
         runtimeType: [
           { framework: { code: net35, name: .NET 3.5 } },
@@ -33,13 +33,13 @@ jobs:
           { dotnet: { code: net8.0, version: '8.0.x', name: .NET 8.0 } },
         ]
         buildConfiguration: [ReleaseFat, ReleaseThin]
-        exclude:
-          - agent: { os: macos, architecture: x64, image: macos-13-large }
-            runtimeType: { dotnet: { code: netcoreapp3.0, version: '3.0.x', name: .NET Core 3.0 } }
-          - agent: { os: macos, architecture: x64, image: macos-13-large }
-            runtimeType: { dotnet: { code: netcoreapp3.1, version: '3.1.x', name: .NET Core 3.1 } }
-          - agent: { os: macos, architecture: x64, image: macos-13-large }
-            runtimeType: { dotnet: { code: net5.0, version: '5.0.x', name: .NET 5.0 } }
+        #exclude:
+        #  - agent: { os: macos, architecture: x64, image: macos-13-large }
+        #    runtimeType: { dotnet: { code: netcoreapp3.0, version: '3.0.x', name: .NET Core 3.0 } }
+        #  - agent: { os: macos, architecture: x64, image: macos-13-large }
+        #    runtimeType: { dotnet: { code: netcoreapp3.1, version: '3.1.x', name: .NET Core 3.1 } }
+        #  - agent: { os: macos, architecture: x64, image: macos-13-large }
+        #    runtimeType: { dotnet: { code: net5.0, version: '5.0.x', name: .NET 5.0 } }
     
     steps:
       - uses: actions/checkout@v2

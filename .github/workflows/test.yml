@@ -11,10 +11,13 @@ jobs:
     strategy:
       matrix:
         machine: [
-          { os: windows-latest, architecture: [x86, x64] },
-          { os: ubuntu-latest, architecture: [x86, x64] },
-          { os: macos-13-large, architecture: [x86, x64] },
-          { os: macos-13-xlarge, architecture: [arm64] }
+          { os: windows-latest, architecture: x86 },
+          { os: windows-latest, architecture: x64 },
+          { os: ubuntu-latest, architecture: x86 },
+          { os: ubuntu-latest, architecture: x64 },
+          { os: macos-13-large, architecture: x86 },
+          { os: macos-13-large, architecture: x64 },
+          { os: macos-13-xlarge, architecture: arm64 }
         ]
         runtimeType: [
           framework: { name: net35 },

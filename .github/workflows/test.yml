@@ -45,10 +45,15 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Setup .NET
-        if: ${{ matrix.runtimeType.dotnet }}
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: ${{ matrix.runtimeType.dotnet.version }}
+          dotnet-version: |
+            3.0.x
+            3.1.x
+            5.0.x
+            6.0.x
+            7.0.x
+            8.0.x
 
       - name: Setup Mono Windows x86
         if: ${{ matrix.runtimeType.mono && matrix.agent.os.windows && matrix.agent.architecture.x86 }}

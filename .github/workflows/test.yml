@@ -5,6 +5,24 @@ on:
   pull_request:
     branches:
       - master
+
+env:
+  # Disable the .NET logo in the console output.
+  DOTNET_NOLOGO: true
+  # Disable the .NET first time experience to skip caching NuGet packages and speed up the build.
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  # Disable sending .NET CLI telemetry to Microsoft.
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+  # Note: Azure Pipelines currently has an issue where if the test name is in the fully qualified name format "namespace.classname.methodname(args)",
+  # it only shows "methodname" rather than the fully qualified name (something do with more than 2 periods in the test name).
+  # Workaround is to use the format: "namespace.classname:methodname(args)" (note the colon)
+  # Also, Azure Pipelines command line argument parser tends to treat single quotes within argument strings literally, so using double quotes instead.
+  runSettingsArgs: "NUnit.DefaultTestNamePattern=\"{C}:{m}{a}\" RunConfiguration.TargetPlatform=${{matrix.agent.architecture}}"
+  # Blame mode helps isolate tests that cause crashes (https://github.com/Microsoft/vstest-docs/blob/master/docs/extensions/blame-datacollector.md),
+  # although it somewhat ironically also makes such unstable tests crash less often, and makes the test suite run slightly slower.
+  blameArg: --blame
+  
 jobs:
   build:
     name: ${{ matrix.agent.os }} ${{ matrix.agent.architecture }} ${{ matrix.runtimeType.framework.name }}${{ matrix.runtimeType.dotnet.name }} ${{ matrix.buildConfiguration }}
@@ -83,26 +101,31 @@ jobs:
         shell: cmd
 
 
-      - name: Build and Test .NET
+      - name: Build
+        run: |
+          dotnet build -c ${{matrix.buildConfiguration}} Harmony.sln
+
+      - name: Test .NET
         #if: ${{ matrix.runtimeType.dotnet }}
         run: |
-          dotnet test -c ${{ matrix.buildConfiguration }} Harmony.sln
+          dotnet test Harmony.sln --no-build --configuration ${{matrix.buildConfiguration}} --logger \"console;verbosity=normal\" ${{env.blameArg}} -- ${{env.runSettingsArgs}}
 
-      - name: Build and Test Mono Windows
+      - name: Test Mono Windows
         #if: ${{ matrix.runtimeType.mono && matrix.agent.os.windows }}
         if: matrix.agent.os == 'windows'
         run: |
-          if [ ${{ matrix.agent.architecture == 'x86' }} ]; then
+          if [ ${{matrix.agent.architecture == 'x86'}} ]; then
             mono="%ProgramFiles(x86)%/Mono/bin/mono.exe"
           fi
-          if [ ${{ matrix.agent.architecture == 'x64' }} ]; then
+          if [ ${{matrix.agent.architecture == 'x64'}} ]; then
             mono="%ProgramFiles%/Mono/bin/mono.exe"
           fi
           
           vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe"
           "$mono" "$vstest" "HarmonyTests/bin/Release/${{matrix.runtimeType.framework.code}}/HarmonyTests.dll" --Framework:${{matrix.runtimeType.framework.code}}
+        shell: bash
 
-      - name: Build and Test Mono Ubuntu/OS X
+      - name: Test Mono Ubuntu/OS X
         #if: ${{ matrix.runtimeType.mono && (matrix.agent.os.ubuntu || matrix.agent.os.macos) }}
         if: matrix.agent.os == 'ubuntu' || matrix.agent.os == 'macos'
         run: |

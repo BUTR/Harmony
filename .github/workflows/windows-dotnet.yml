@@ -27,15 +27,22 @@ jobs:
         if: inputs.architecture == 'x86'
         run: |
           Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
-          $channel = '${{inputs.target_framework}}'.Replace('coreapp', '').Replace('net', '');
+          $channel = '${{inputs.target_framework_version}}'.Replace('coreapp', '').Replace('net', '');
           .\dotnet-install.ps1 -Channel $channel -Architecture x86 -Runtime dotnet -InstallDir "${Env:ProgramFiles(x86)}\dotnet" -NoPath
         shell: pwsh
         
       - name: Setup .NET Windows x64
         if: inputs.architecture == 'x64'
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: ${{inputs.target_framework}}
+        run: |
+          Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
+          $channel = '${{inputs.target_framework_version}}'.Replace('coreapp', '').Replace('net', '');
+          .\dotnet-install.ps1 -Channel $channel -Architecture x64 -Runtime dotnet -InstallDir "${Env:ProgramFiles}\dotnet" -NoPath
+        shell: pwsh
+      #- name: Setup .NET Windows x64
+      #  if: inputs.architecture == 'x64'
+      #  uses: actions/setup-dotnet@v3
+      #  with:
+      #    dotnet-version: ${{inputs.target_framework}}
 
       - name: Build
         run: |

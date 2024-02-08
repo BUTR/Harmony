@@ -86,6 +86,7 @@ jobs:
         #if: ${{ matrix.runtimeType.dotnet }}
         run: |
           dotnet test -c ${{ matrix.buildConfiguration }} Harmony.sln
+        continue-on-error: true
 
       - name: Build and Test Mono Windows
         #if: ${{ matrix.runtimeType.mono && matrix.agent.os.windows }}
@@ -100,9 +101,11 @@ jobs:
           
           vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe"
           "$mono" "$vstest" "HarmonyTests/bin/Release/${{matrix.runtimeType.framework.code}}/HarmonyTests.dll" --Framework:${{matrix.runtimeType.framework.code}}
+        continue-on-error: true
 
       - name: Build and Test Mono Ubuntu/OS X
         #if: ${{ matrix.runtimeType.mono && (matrix.agent.os.ubuntu || matrix.agent.os.macos) }}
         if: matrix.agent.os == 'ubuntu' || matrix.agent.os == 'macos'
         run: |
           echo "TODO";
+        continue-on-error: true

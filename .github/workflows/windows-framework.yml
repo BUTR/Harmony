@@ -21,11 +21,14 @@ jobs:
     env:
       run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{inputs.architecture}}'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET Sdk
+        uses: actions/setup-dotnet@v3
      
       - name: Build
         run: |
-          dotnet build -c ${{inputs.build_configuration}} --framework ${{inputs.target_framework}} Harmony.sln
+          dotnet build -c ${{inputs.build_configuration}} -f ${{inputs.target_framework}} Harmony.sln
 
       - name: Test .NET Framework
         run: |

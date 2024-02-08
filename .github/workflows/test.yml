@@ -134,7 +134,7 @@ jobs:
         run: |
           dotnet build -c ${{matrix.buildConfiguration}} Harmony.sln
 
-      - name: Test .NET
+      - name: Test .NET and Mono Ubuntu/OSX
         run: |
           dotnet test Harmony.sln --no-build --configuration ${{matrix.buildConfiguration}} --logger "console;verbosity=normal" --blame -- ${{env.runSettingsArgs}}
 
@@ -153,10 +153,8 @@ jobs:
           
           # Execute the tests via mono + vstest.console.
           vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe"
-          "$mono" "$vstest" "HarmonyTests/bin/Release/${{matrix.runtimeType.framework.code}}/HarmonyTests.dll" --Framework:${{matrix.runtimeType.framework.code}}
+          "$mono" "$vstest" "HarmonyTests/bin/Release/net35/HarmonyTests.dll" --Framework:net35 --logger:trx --ResultsDirectory:"${{env.RUNNER_TEMP}}" --blame -- ${{env.runSettingsArgs}}
+          "$mono" "$vstest" "HarmonyTests/bin/Release/net452/HarmonyTests.dll" --Framework:net452 --logger:trx --ResultsDirectory:"${{env.RUNNER_TEMP}}" --blame -- ${{env.runSettingsArgs}}
+          "$mono" "$vstest" "HarmonyTests/bin/Release/net472/HarmonyTests.dll" --Framework:net472 --logger:trx --ResultsDirectory:"${{env.RUNNER_TEMP}}" --blame -- ${{env.runSettingsArgs}}
+          "$mono" "$vstest" "HarmonyTests/bin/Release/net48/HarmonyTests.dll" --Framework:net48 --logger:trx --ResultsDirectory:"${{env.RUNNER_TEMP}}" --blame -- ${{env.runSettingsArgs}}
         shell: bash
-
-      - name: Test Mono Ubuntu/OS X
-        if: matrix.agent.os == 'ubuntu' || matrix.agent.os == 'macos'
-        run: |
-          echo "TODO";

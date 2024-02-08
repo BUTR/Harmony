@@ -45,7 +45,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Setup .NET Ubuntu/Windows/OSX x64
-        if: ${{ matrix.agent.os.ubuntu || matrix.agent.os.windows || (matrix.agent.os.macos && matrix.agent.architecture.x64) }}
+        if: ${{ matrix.agent.os.ubuntu != null || matrix.agent.os.windows != null || (matrix.agent.os.macos != null && matrix.agent.architecture.x64 != null) }}
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: |
@@ -57,7 +57,7 @@ jobs:
             8.0.x
             
       - name: Setup .NET OSX Arm64
-        if: ${{ matrix.agent.os.macos && matrix.agent.architecture.arm64 }}
+        if: ${{ matrix.agent.os.macos != null && matrix.agent.architecture.arm64 != null }}
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: |
@@ -67,7 +67,7 @@ jobs:
 
       - name: Setup Mono Windows x86
         #if: ${{ matrix.runtimeType.mono && matrix.agent.os.windows && matrix.agent.architecture.x86 }}
-        if: ${{ matrix.agent.os.windows && matrix.agent.architecture.x86 }}
+        if: ${{ matrix.agent.os.windows != null && matrix.agent.architecture.x86 != null }}
         run: |
           curl -L https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0-gtksharp-2.12.45-win32-0.msi -o mono.msi
           msiexec /i mono.msi /quiet
@@ -75,7 +75,7 @@ jobs:
 
       - name: Setup Mono Windows x64
         #if: ${{ matrix.runtimeType.mono && matrix.agent.os.windows && matrix.agent.architecture.x64 }}
-        if: ${{ matrix.agent.os.windows && matrix.agent.architecture.x64 }}
+        if: ${{ matrix.agent.os.windows != null && matrix.agent.architecture.x64 != null }}
         run: |
           curl -L https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0.199-x64-0.msi -o mono.msi
           msiexec /i mono.msi /quiet
@@ -89,12 +89,12 @@ jobs:
 
       - name: Build and Test Mono Windows
         #if: ${{ matrix.runtimeType.mono && matrix.agent.os.windows }}
-        if: ${{ matrix.agent.os.windows }}
+        if: ${{ matrix.agent.os.windows != null }}
         run: |
-          if [ ${{ matrix.agent.architecture.x86 }} ]; then
+          if [ ${{ matrix.agent.architecture.x86 != null }} ]; then
             mono="%ProgramFiles(x86)%/Mono/bin/mono.exe"
           fi
-          if [ ${{ matrix.agent.architecture.x64 }} ]; then
+          if [ ${{ matrix.agent.architecture.x64 != null }} ]; then
             mono="%ProgramFiles%/Mono/bin/mono.exe"
           fi
           
@@ -103,6 +103,6 @@ jobs:
 
       - name: Build and Test Mono Ubuntu/OS X
         #if: ${{ matrix.runtimeType.mono && (matrix.agent.os.ubuntu || matrix.agent.os.macos) }}
-        if: ${{ matrix.agent.os.ubuntu || matrix.agent.os.macos }}
+        if: ${{ matrix.agent.os.ubuntu != null || matrix.agent.os.macos != null }}
         run: |
           echo "TODO";

@@ -12,12 +12,12 @@ jobs:
     strategy:
       matrix:
         agent: [
-          { os: windows, architecture: x86, image: windows-latest },
-          { os: windows, architecture: x64, image: windows-latest },
-          { os: ubuntu, architecture: x86, image: ubuntu-latest },
-          { os: ubuntu, architecture: x64, image: ubuntu-latest },
-          { os: macos, architecture: x64, image: macos-13-large },
-          { os: macos, architecture: arm64, image: macos-13-xlarge },
+          { os: 'windows', architecture: 'x86', image: 'windows-latest' },
+          { os: 'windows', architecture: 'x64', image: 'windows-latest' },
+          { os: 'ubuntu', architecture: 'x86', image: 'ubuntu-latest' },
+          { os: 'ubuntu', architecture: 'x64', image: 'ubuntu-latest' },
+          { os: 'macos', architecture: 'x64', image: 'macos-13-large' },
+          { os: 'macos', architecture: 'arm64', image: 'macos-13-xlarge' },
         ]
         #runtimeType: [
         #  { framework: { code: net35, name: .NET 3.5 } },
@@ -32,7 +32,7 @@ jobs:
         #  { dotnet: { code: net7.0, version: '7.0.x', name: .NET 7.0 } },
         #  { dotnet: { code: net8.0, version: '8.0.x', name: .NET 8.0 } },
         #]
-        buildConfiguration: [ReleaseFat, ReleaseThin]
+        buildConfiguration: ['ReleaseFat', 'ReleaseThin']
         #exclude:
         #  - agent: { os: macos, architecture: x64, image: macos-13-large }
         #    runtimeType: { dotnet: { code: netcoreapp3.0, version: '3.0.x', name: .NET Core 3.0 } }
@@ -45,7 +45,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Setup .NET Ubuntu/Windows/OSX x64
-        if: matrix.agent.os == ubuntu || matrix.agent.os == windows || (matrix.agent.os == macos && matrix.agent.architecture == x64)
+        if: matrix.agent.os == 'ubuntu' || matrix.agent.os == 'windows' || (matrix.agent.os == 'macos' && matrix.agent.architecture == 'x64')
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: |
@@ -57,7 +57,7 @@ jobs:
             8.0.x
             
       - name: Setup .NET OSX Arm64
-        if: matrix.agent.os == macos && matrix.agent.architecture == arm64
+        if: matrix.agent.os == 'macos' && matrix.agent.architecture == 'arm64'
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: |
@@ -67,7 +67,7 @@ jobs:
 
       - name: Setup Mono Windows x86
         #if: ${{ matrix.runtimeType.mono && matrix.agent.os.windows && matrix.agent.architecture.x86 }}
-        if: matrix.agent.os == windows && matrix.agent.architecture == x86
+        if: matrix.agent.os == 'windows' && matrix.agent.architecture == 'x86'
         run: |
           curl -L https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0-gtksharp-2.12.45-win32-0.msi -o mono.msi
           msiexec /i mono.msi /quiet
@@ -75,7 +75,7 @@ jobs:
 
       - name: Setup Mono Windows x64
         #if: ${{ matrix.runtimeType.mono && matrix.agent.os.windows && matrix.agent.architecture.x64 }}
-        if: matrix.agent.os == windows && matrix.agent.architecture == x64
+        if: matrix.agent.os =='windows' && matrix.agent.architecture == 'x64'
         run: |
           curl -L https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0.199-x64-0.msi -o mono.msi
           msiexec /i mono.msi /quiet
@@ -89,7 +89,7 @@ jobs:
 
       - name: Build and Test Mono Windows
         #if: ${{ matrix.runtimeType.mono && matrix.agent.os.windows }}
-        if: matrix.agent.os == windows
+        if: matrix.agent.os == 'windows'
         run: |
           if [ ${{ matrix.agent.architecture == x86 }} ]; then
             mono="%ProgramFiles(x86)%/Mono/bin/mono.exe"
@@ -103,6 +103,6 @@ jobs:
 
       - name: Build and Test Mono Ubuntu/OS X
         #if: ${{ matrix.runtimeType.mono && (matrix.agent.os.ubuntu || matrix.agent.os.macos) }}
-        if: matrix.agent.os == ubuntu || matrix.agent.os == macos
+        if: matrix.agent.os == 'ubuntu' || matrix.agent.os == 'macos'
         run: |
           echo "TODO";

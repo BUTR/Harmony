@@ -1,0 +1,51 @@
+name: Windows Mono
+
+on:
+  workflow_call:
+    inputs:
+      architecture:
+        required: true
+        type: string
+      target_framework:
+        required: true
+        type: string
+      build_configuration:
+        required: true
+        type: string
+
+jobs:
+  windows-mono:
+    name: Windows Mono
+    runs-on: windows-latest
+    continue-on-error: true
+    env:
+      run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{inputs.architecture}}'
+    steps:
+      - name: Setup Mono x86
+        if: inputs.architecture == 'x86'
+        run: |
+          curl -L https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0-gtksharp-2.12.45-win32-0.msi -o mono.msi
+          msiexec /i mono.msi /quiet
+
+      - name: Setup Mono x64
+        if: inputs.architecture == 'x64'
+        run: |
+          curl -L https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0.199-x64-0.msi -o mono.msi
+          msiexec /i mono.msi /quiet
+
+      - name: Test Mono
+        run: |
+          shopt -s failglob globstar
+          set -x
+          
+          if ${{inputs.architecture == 'x86'}}; then
+            mono="$(printenv "ProgramFiles(x86)")/Mono/bin/mono.exe"
+          fi
+          if ${{inputs.architecture == 'x64'}}; then
+            mono="$(echo $PROGRAMFILES)/Mono/bin/mono.exe"
+          fi
+          
+          # Execute the tests via mono + vstest.console.
+          vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe"
+          "$mono" "$vstest" "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" --Framework:${{inputs.target_framework}} --logger:trx --ResultsDirectory:"$RUNNER_TEMP" --blame -- ${{inputs.run_settings_args}}
+        shell: bash

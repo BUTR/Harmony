@@ -50,4 +50,4 @@ jobs:
 
       - name: Test .NET
         run: |
-          dotnet test Harmony.sln --no-build --configuration ${{inputs.build_configuration}} --framework ${{inputs.target_framework}} --logger "console;verbosity=normal" --blame -- ${{inputs.run_settings_args}}
+          dotnet test Harmony.sln --no-build --configuration ${{inputs.build_configuration}} --framework ${{inputs.target_framework}} --logger "console;verbosity=normal" --blame -- ${{env.run_settings_args}}

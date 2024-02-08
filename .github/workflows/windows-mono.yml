@@ -55,5 +55,11 @@ jobs:
           
           # Execute the tests via mono + vstest.console.
           vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe"
-          "$mono" "$vstest" "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" --Framework:${{inputs.target_framework}} --logger:trx --ResultsDirectory:"$RUNNER_TEMP" --blame -- ${{env.run_settings_args}}
+          "$mono" "$vstest" "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" --Framework:${{inputs.target_framework}} --logger:trx --ResultsDirectory:"${{ github.workspace }}/TestResults" --blame -- ${{env.run_settings_args}}
         shell: bash
+
+      - name: Parse Trx files
+        uses: NasAmin/trx-parser@v0.5.0
+        with:
+          TRX_PATH: ${{ github.workspace }}/TestResults #This should be the path to your TRX files
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}   

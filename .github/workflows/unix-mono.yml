@@ -34,4 +34,10 @@ jobs:
 
       - name: Test .NET
         run: |
-          dotnet test Harmony.sln --no-build --configuration ${{inputs.build_configuration}} --framework ${{inputs.target_framework}} --logger "console;verbosity=normal" --blame -- ${{env.run_settings_args}}
+          dotnet test Harmony.sln --no-build -c ${{inputs.build_configuration}} -f ${{inputs.target_framework}} --logger trx --results-directory ./TestResults --blame -- ${{env.run_settings_args}}
+
+      - name: Parse Trx files
+        uses: NasAmin/trx-parser@v0.5.0
+        with:
+          TRX_PATH: ${{ github.workspace }}/TestResults #This should be the path to your TRX files
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}   

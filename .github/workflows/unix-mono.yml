@@ -1,8 +1,11 @@
-name: Ubuntu Mono
+name: Unix Mono
 
 on:
   workflow_call:
     inputs:
+      image:
+        required: true
+        type: string
       architecture:
         required: true
         type: string
@@ -14,10 +17,9 @@ on:
         type: string
 
 jobs:
-  ubuntu-mono:
-    name: Mono Ubuntu-${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
-    runs-on: ubuntu-latest
-    continue-on-error: true
+  unix-mono:
+    name: Mono ${{ inputs.image }}-${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
+    runs-on: ${{inputs.image}}
     env:
       run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{inputs.architecture}}'
     steps:

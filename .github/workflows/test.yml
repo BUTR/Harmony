@@ -118,11 +118,15 @@ jobs:
 
       - name: Setup Mono Windows x86
         if: matrix.agent.os == 'windows' && matrix.agent.architecture == 'x86'
-        run: choco install mono --x86
-
+        run: |
+          curl -L https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0-gtksharp-2.12.45-win32-0.msi -o mono.msi
+          msiexec /i mono.msi /quiet
+          
       - name: Setup Mono Windows x64
         if: matrix.agent.os =='windows' && matrix.agent.architecture == 'x64'
-        run: choco install mono
+        run: |
+          curl -L https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0.199-x64-0.msi -o mono.msi
+          msiexec /i mono.msi /quiet
 
 
 

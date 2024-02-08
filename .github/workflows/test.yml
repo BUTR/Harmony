@@ -35,7 +35,11 @@ jobs:
         buildConfiguration: [ReleaseFat, ReleaseThin]
         exclude:
           - agent: { os: macos, architecture: x64 }
-            runtimeType: { dotnet: { code: [netcoreapp3.0, netcoreapp3.1, net5.0] } }
+            runtimeType: [
+              dotnet: { code: netcoreapp3.0 },
+              dotnet: { code: netcoreapp3.1 },
+              dotnet: { code: net5.0 }
+            }
     steps:
       - uses: actions/checkout@v2
 

@@ -63,20 +63,18 @@ jobs:
 
       - name: Setup .NET Windows x86
         if: matrix.agent.os == 'windows' && matrix.agent.architecture == 'x86'
-        uses: dlemstra/setup-dotnet@add-architecture-option
-        with:
-          dotnet-version: |
-            3.0.x
-            3.1.x
-            5.0.x
-            6.0.x
-            7.0.x
-            8.0.x
-          dotnet-architecture: x86
+        run: |
+          Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
+          .\dotnet-install.ps1 -Channel 3.0 -Architecture x86 -Runtime dotnet -InstallDir "${Env:ProgramFiles(x86)}\dotnet" -NoPath
+          .\dotnet-install.ps1 -Channel 3.1 -Architecture x86 -Runtime dotnet -InstallDir "${Env:ProgramFiles(x86)}\dotnet" -NoPath
+          .\dotnet-install.ps1 -Channel 5.0 -Architecture x86 -Runtime dotnet -InstallDir "${Env:ProgramFiles(x86)}\dotnet" -NoPath
+          .\dotnet-install.ps1 -Channel 6.0 -Architecture x86 -Runtime dotnet -InstallDir "${Env:ProgramFiles(x86)}\dotnet" -NoPath
+          .\dotnet-install.ps1 -Channel 7.0 -Architecture x86 -Runtime dotnet -InstallDir "${Env:ProgramFiles(x86)}\dotnet" -NoPath
+          .\dotnet-install.ps1 -Channel 8.0 -Architecture x86 -Runtime dotnet -InstallDir "${Env:ProgramFiles(x86)}\dotnet" -NoPath
 
       - name: Setup .NET Ubuntu/Windows/OSX x64
         if: matrix.agent.architecture == 'x64'
-        uses: dlemstra/setup-dotnet@add-architecture-option
+        uses: actions/setup-dotnet@v1
         with:
           dotnet-version: |
             3.0.x
@@ -85,11 +83,10 @@ jobs:
             6.0.x
             7.0.x
             8.0.x
-          dotnet-architecture: x64
 
       - name: Setup .NET Ubuntu arm64
         if: matrix.agent.os == 'ubuntu' && matrix.agent.architecture == 'arm64'
-        uses: dlemstra/setup-dotnet@add-architecture-option
+        uses: actions/setup-dotnet@v1
         with:
           dotnet-version: |
             3.0.x
@@ -98,28 +95,25 @@ jobs:
             6.0.x
             7.0.x
             8.0.x
-          dotnet-architecture: arm64
 
       - name: Setup .NET Windows arm64
         if: matrix.agent.os == 'windows' && matrix.agent.architecture == 'arm64'
-        uses: dlemstra/setup-dotnet@add-architecture-option
+        uses: actions/setup-dotnet@v1
         with:
           dotnet-version: |
             5.0.x
             6.0.x
             7.0.x
             8.0.x
-          dotnet-architecture: arm64
 
       - name: Setup .NET OSX arm64
         if: matrix.agent.os == 'macos' && matrix.agent.architecture == 'arm64'
-        uses: dlemstra/setup-dotnet@add-architecture-option
+        uses: actions/setup-dotnet@v1
         with:
           dotnet-version: |
             6.0.x
             7.0.x
             8.0.x
-          dotnet-architecture: arm64
 
 
       - name: Setup Mono Windows x86

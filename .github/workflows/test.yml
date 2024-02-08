@@ -41,7 +41,7 @@ jobs:
               dotnet: { code: netcoreapp3.0 },
               dotnet: { code: netcoreapp3.1 },
               dotnet: { code: net5.0 }
-            }
+            ]
     steps:
       - uses: actions/checkout@v2
 

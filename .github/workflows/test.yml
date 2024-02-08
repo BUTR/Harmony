@@ -7,17 +7,17 @@ on:
       - master
 jobs:
   build:
-    runs-on: ${{ matrix.machine.os }}
+    runs-on: ${{ matrix.agent.image }}
     strategy:
       matrix:
-        machine: [
-          { os: windows-latest, architecture: x86 },
-          { os: windows-latest, architecture: x64 },
-          { os: ubuntu-latest, architecture: x86 },
-          { os: ubuntu-latest, architecture: x64 },
-          { os: macos-13-large, architecture: x86 },
-          { os: macos-13-large, architecture: x64 },
-          { os: macos-13-xlarge, architecture: arm64 }
+        agent: [
+          { os: windows, architecture: x86, image: windows-latest },
+          { os: windows, architecture: x64, image: windows-latest },
+          { os: ubuntu, architecture: x86, image: ubuntu-latest },
+          { os: ubuntu, architecture: x64, image: ubuntu-latest },
+          { os: macos, architecture: x86, image: macos-13-large },
+          { os: macos, architecture: x64, image: macos-13-large },
+          { os: macos, architecture: arm64, image: macos-13-xlarge }
         ]
         runtimeType: [
           framework: { name: net35 },
@@ -43,29 +43,39 @@ jobs:
           dotnet-version: ${{ matrix.runtimeType.dotnet.version }}
 
       - name: Setup Mono Windows x86
-        if: ${{ matrix.runtimeType == 'mono' && matrix.machine.os == 'windows' && matrix.machine.architecture == 'x86' }}
+        if: ${{ matrix.runtimeType == 'mono' && matrix.agent.os == 'windows' && matrix.agent.architecture == 'x86' }}
         run: |
           curl -L https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0-gtksharp-2.12.45-win32-0.msi -o mono.msi
           msiexec /i mono.msi /quiet
         shell: cmd
 
       - name: Setup Mono Windows x64
-        if: ${{ matrix.runtimeType == 'mono' && matrix.machine.os == 'windows' && matrix.machine.architecture == 'x64' }}
+        if: ${{ matrix.runtimeType == 'mono' && matrix.agent.os == 'windows' && matrix.agent.architecture == 'x64' }}
         run: |
           curl -L https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0.199-x64-0.msi -o mono.msi
           msiexec /i mono.msi /quiet
         shell: cmd
 
-      - name: Build and Test
+
+      - name: Build and Test .NET
+        if: ${{ matrix.runtimeType == 'dotnet' }}
         run: |
-          dotnet build -c ${{ matrix.buildConfiguration }} Harmony.sln
-          
-          if [ ${{ matrix.runtimeType == 'dotnet' || matrix.runtimeType == 'framework' }} ]; then
-            dotnet test -c ${{ matrix.buildConfiguration }} --no-build Harmony.sln
+          dotnet test -c ${{ matrix.buildConfiguration }} Harmony.sln
+
+      - name: Build and Test Mono Windows
+        if: ${{ matrix.runtimeType == 'mono' && matrix.agent.os == 'windows' }}
+        run: |
+          if [ ${{ matrix.agent.architecture == 'x86' }} ]; then
+            mono="%ProgramFiles(x86)%/Mono/bin/mono.exe"
           fi
-          
-          if [ ${{ matrix.runtimeType == 'mono' }} ]; then
+          if [ ${{ matrix.agent.architecture == 'x64' }} ]; then
             mono="%ProgramFiles%/Mono/bin/mono.exe"
-            vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe"
-            "$mono" "$vstest" "HarmonyTests/bin/Release/${{matrix.runtimeType.framework.name}}/HarmonyTests.dll" --Framework:${{matrix.runtimeType.framework.name}}
           fi
+          
+          vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe"
+          "$mono" "$vstest" "HarmonyTests/bin/Release/${{matrix.runtimeType.framework.name}}/HarmonyTests.dll" --Framework:${{matrix.runtimeType.framework.name}}
+
+      - name: Build and Test
+        if: ${{ matrix.runtimeType == 'mono' && matrix.agent.os != 'windows' }}
+        run: |
+          echo "TODO";

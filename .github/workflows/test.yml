@@ -34,7 +34,9 @@ jobs:
         ]
         buildConfiguration: [ReleaseFat, ReleaseThin]
         exclude:
-          - agent: { os: macos, architecture: x64 }
+          - agent: [ 
+              { os: macos, architecture: x64 }
+            ]
             runtimeType: [
               dotnet: { code: netcoreapp3.0 },
               dotnet: { code: netcoreapp3.1 },

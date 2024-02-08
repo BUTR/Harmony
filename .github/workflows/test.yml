@@ -25,8 +25,8 @@ jobs:
           { os: 'windows', architecture: 'x86', image: 'windows-latest' },
           { os: 'windows', architecture: 'x64', image: 'windows-latest' },
           { os: 'ubuntu', architecture: 'x64', image: 'ubuntu-latest' },
-          { os: 'macos', architecture: 'x64', image: 'macos-13-large' },
-          { os: 'macos', architecture: 'arm64', image: 'macos-13-xlarge' },
+          { os: 'macos', architecture: 'x64', image: 'macos-13' },
+          { os: 'macos', architecture: 'arm64', image: 'macos-14' },
         ]
         #runtimeType: [
         #  { framework: { code: net35, name: .NET 3.5 } },
@@ -153,8 +153,8 @@ jobs:
           
           # Execute the tests via mono + vstest.console.
           vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe"
-          "$mono" "$vstest" "HarmonyTests/bin/Release/net35/HarmonyTests.dll" --Framework:net35 --logger:trx --ResultsDirectory:"${{env.RUNNER_TEMP}}" --blame -- ${{env.runSettingsArgs}}
-          "$mono" "$vstest" "HarmonyTests/bin/Release/net452/HarmonyTests.dll" --Framework:net452 --logger:trx --ResultsDirectory:"${{env.RUNNER_TEMP}}" --blame -- ${{env.runSettingsArgs}}
-          "$mono" "$vstest" "HarmonyTests/bin/Release/net472/HarmonyTests.dll" --Framework:net472 --logger:trx --ResultsDirectory:"${{env.RUNNER_TEMP}}" --blame -- ${{env.runSettingsArgs}}
-          "$mono" "$vstest" "HarmonyTests/bin/Release/net48/HarmonyTests.dll" --Framework:net48 --logger:trx --ResultsDirectory:"${{env.RUNNER_TEMP}}" --blame -- ${{env.runSettingsArgs}}
+          "$mono" "$vstest" "HarmonyTests/bin/Release/net35/HarmonyTests.dll" --Framework:net35 --logger:trx --ResultsDirectory:"$RUNNER_TEMP" --blame -- ${{env.runSettingsArgs}}
+          "$mono" "$vstest" "HarmonyTests/bin/Release/net452/HarmonyTests.dll" --Framework:net452 --logger:trx --ResultsDirectory:"$RUNNER_TEMP" --blame -- ${{env.runSettingsArgs}}
+          "$mono" "$vstest" "HarmonyTests/bin/Release/net472/HarmonyTests.dll" --Framework:net472 --logger:trx --ResultsDirectory:"$RUNNER_TEMP" --blame -- ${{env.runSettingsArgs}}
+          "$mono" "$vstest" "HarmonyTests/bin/Release/net48/HarmonyTests.dll" --Framework:net48 --logger:trx --ResultsDirectory:"$RUNNER_TEMP" --blame -- ${{env.runSettingsArgs}}
         shell: bash

@@ -7,28 +7,27 @@ on:
         - master
 jobs:
     build:
-        runs-on: ${{ matrix.os }}
+        runs-on: ${{ matrix.machine.os }}
         strategy:
             matrix:
-                os: [windows-latest, ubuntu-latest, macos-latest]
-                architecture: [x86, x64, arm]
                 runtimeType: [
+                  fx: { framework: net35 },
+                  fx: { framework: net452 },
+                  fx: { framework: net472 },
+                  fx: { framework: net48 },
+                  
                   dotnet: { framework: netcoreapp3.0, version: '3.0.x' },
                   dotnet: { framework: netcoreapp3.1, version: '3.1.x' },
                   dotnet: { framework: net5.0, version: '5.0.x' },
                   dotnet: { framework: net6.0, version: '6.0.x' },
                   dotnet: { framework: net7.0, version: '7.0.x' },
                   dotnet: { framework: net8.0, version: '8.0.x' },
-                               
-                  fx: { framework: net35 },
-                  fx: { framework: net452 },
-                  fx: { framework: net472 },
-                  fx: { framework: net48 },
-                               
-                  mono: { framework: net35 },
-                  mono: { framework: net452 },
-                  mono: { framework: net472 },
-                  mono: { framework: net48 }
+                ]
+                machine: [
+                  { os: windows-latest, architecture: [x86, x64] },
+                  { os: ubuntu-latest, architecture: [x86, x64] },
+                  { os: macos-13-large, architecture: [x86, x64] }
+                  { os: macos-13-xlarge, architecture: [arm64] }
                 ]
                 buildConfiguration: [ReleaseFat, ReleaseThin]
         steps:
@@ -41,14 +40,14 @@ jobs:
               dotnet-version: ${{ matrix.runtimeType.dotnet.version }}
 
           - name: Setup Mono Windows x86
-            if: ${{ matrix.runtimeType == 'mono' && matrix.os == 'windows' && matrix.architecture == 'x86' }}
+            if: ${{ matrix.runtimeType == 'mono' && matrix.machine.os == 'windows' && matrix.machine.architecture == 'x86' }}
             run: |
               curl -L https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0-gtksharp-2.12.45-win32-0.msi -o mono.msi
               msiexec /i mono.msi /quiet
             shell: cmd
 
           - name: Setup Mono Windows x64
-            if: ${{ matrix.runtimeType == 'mono' && matrix.os == 'windows' && matrix.architecture == 'x64' }}
+            if: ${{ matrix.runtimeType == 'mono' && matrix.machine.os == 'windows' && matrix.machine.architecture == 'x64' }}
             run: |
               curl -L https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0.199-x64-0.msi -o mono.msi
               msiexec /i mono.msi /quiet

@@ -84,7 +84,6 @@ jobs:
             8.0.x
 
       - name: Setup Mono Windows x86
-        #if: ${{ matrix.runtimeType.mono && matrix.agent.os.windows && matrix.agent.architecture.x86 }}
         if: matrix.agent.os == 'windows' && matrix.agent.architecture == 'x86'
         run: |
           curl -L https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0-gtksharp-2.12.45-win32-0.msi -o mono.msi
@@ -92,7 +91,6 @@ jobs:
         shell: cmd
 
       - name: Setup Mono Windows x64
-        #if: ${{ matrix.runtimeType.mono && matrix.agent.os.windows && matrix.agent.architecture.x64 }}
         if: matrix.agent.os =='windows' && matrix.agent.architecture == 'x64'
         run: |
           curl -L https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0.199-x64-0.msi -o mono.msi
@@ -105,12 +103,10 @@ jobs:
           dotnet build -c ${{matrix.buildConfiguration}} Harmony.sln
 
       - name: Test .NET
-        #if: ${{ matrix.runtimeType.dotnet }}
         run: |
-          dotnet test Harmony.sln --no-build --configuration ${{matrix.buildConfiguration}} --logger \"console;verbosity=normal\" ${{env.blameArg}} -- ${{env.runSettingsArgs}}
+          dotnet test Harmony.sln --no-build --configuration ${{matrix.buildConfiguration}} --logger "console;verbosity=normal" --blame -- ${{env.runSettingsArgs}}
 
       - name: Test Mono Windows
-        #if: ${{ matrix.runtimeType.mono && matrix.agent.os.windows }}
         if: matrix.agent.os == 'windows'
         run: |
           if [ ${{matrix.agent.architecture == 'x86'}} ]; then
@@ -125,7 +121,6 @@ jobs:
         shell: bash
 
       - name: Test Mono Ubuntu/OS X
-        #if: ${{ matrix.runtimeType.mono && (matrix.agent.os.ubuntu || matrix.agent.os.macos) }}
         if: matrix.agent.os == 'ubuntu' || matrix.agent.os == 'macos'
         run: |
           echo "TODO";

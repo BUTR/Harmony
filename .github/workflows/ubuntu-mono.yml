@@ -1,0 +1,35 @@
+name: Ubuntu Mono
+
+on:
+  workflow_call:
+    inputs:
+      architecture:
+        required: true
+        type: string
+      target_framework:
+        required: true
+        type: string
+      build_configuration:
+        required: true
+        type: string
+
+jobs:
+  ubuntu-mono:
+    name: Mono Ubuntu-${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    env:
+      run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{inputs.architecture}}'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET Sdk
+        uses: actions/setup-dotnet@v3
+
+      - name: Build
+        run: |
+          dotnet build -c ${{inputs.build_configuration}} -f ${{inputs.target_framework}} Harmony.sln
+
+      - name: Test .NET
+        run: |
+          dotnet test Harmony.sln --no-build --configuration ${{inputs.build_configuration}} --framework ${{inputs.target_framework}} --logger "console;verbosity=normal" --blame -- ${{env.run_settings_args}}

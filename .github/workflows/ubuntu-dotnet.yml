@@ -1,4 +1,4 @@
-name: Windows .NET
+name: Ubuntu .NET
 
 on:
   workflow_call:
@@ -14,9 +14,9 @@ on:
         type: string
 
 jobs:
-  windows-net:
-    name: .NET Windows-${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
-    runs-on: windows-latest
+  ubuntu-net:
+    name: .NET Ubuntu-${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
+    runs-on: ubuntu-latest
     continue-on-error: true
     env:
       run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{inputs.architecture}}'
@@ -25,21 +25,21 @@ jobs:
 
       - name: Setup .NET Sdk
         uses: actions/setup-dotnet@v3
-      
-      - name: Setup .NET Windows x86
+
+      - name: Setup .NET Ubuntu x86
         if: inputs.architecture == 'x86'
         run: |
           Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
           $channel = '${{inputs.target_framework}}'.Replace('coreapp', '').Replace('net', '');
-          .\dotnet-install.ps1 -Channel $channel -Architecture x86 -Runtime dotnet -InstallDir "${Env:ProgramFiles(x86)}\dotnet" -NoPath
+          .\dotnet-install.ps1 -Channel $channel -Architecture x86 -Runtime dotnet -InstallDir "${Env:HOME}/.dotnet" -NoPath
         shell: pwsh
         
-      - name: Setup .NET Windows x64
+      - name: Setup .NET Ubuntu x64
         if: inputs.architecture == 'x64'
         run: |
           Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
           $channel = '${{inputs.target_framework}}'.Replace('coreapp', '').Replace('net', '');
-          .\dotnet-install.ps1 -Channel $channel -Architecture x64 -Runtime dotnet -InstallDir "${Env:ProgramFiles}\dotnet" -NoPath
+          .\dotnet-install.ps1 -Channel $channel -Architecture x64 -Runtime dotnet -InstallDir "${Env:HOME}/.dotnet" -NoPath
         shell: pwsh
 
       - name: Build

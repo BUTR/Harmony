@@ -51,6 +51,30 @@ jobs:
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
 
+  ubuntu-net:
+    strategy:
+      matrix:
+        architecture: ['x64']
+        target_framework: ['netcoreapp3.0', 'netcoreapp3.1', 'net5.0', 'net6.0', 'net7.0', 'net8.0']
+        build_configuration: ['ReleaseFat', 'ReleaseThin']
+    uses: ./.github/workflows/ubuntu-dotnet.yml
+    with:
+      architecture: ${{ matrix.architecture }}
+      target_framework: ${{ matrix.target_framework }}
+      build_configuration: ${{ matrix.build_configuration }}
+
+  ubuntu-mono:
+    strategy:
+      matrix:
+        architecture: ['x64']
+        target_framework: ['net35', 'net452', 'net472', 'net48']
+        build_configuration: ['ReleaseFat', 'ReleaseThin']
+    uses: ./.github/workflows/ubuntu-mono.yml
+    with:
+      architecture: ${{ matrix.architecture }}
+      target_framework: ${{ matrix.target_framework }}
+      build_configuration: ${{ matrix.build_configuration }}
+
   build:
     name: ${{ matrix.agent.os }} ${{ matrix.agent.architecture }} ${{ matrix.runtimeType.framework.name }}${{ matrix.runtimeType.dotnet.name }} ${{ matrix.buildConfiguration }}
     runs-on: ${{ matrix.agent.image }}
@@ -60,31 +84,11 @@ jobs:
         agent: [
           #{ os: 'windows', architecture: 'x86', image: 'windows-latest' },
           #{ os: 'windows', architecture: 'x64', image: 'windows-latest' },
-          { os: 'ubuntu', architecture: 'x64', image: 'ubuntu-latest' },
+          #{ os: 'ubuntu', architecture: 'x64', image: 'ubuntu-latest' },
           { os: 'macos', architecture: 'x64', image: 'macos-13' },
           { os: 'macos', architecture: 'arm64', image: 'macos-14' },
         ]
-        #runtimeType: [
-        #  { framework: { code: net35, name: .NET 3.5 } },
-        #  { framework: { code: net452, name: .NET 4.5.2 } },
-        #  { framework: { code: net472, name: .NET 4.7.2 } },
-        #  { framework: { code: net48, name: .NET 4.8 } },
-        #  
-        #  { dotnet: { code: netcoreapp3.0, version: '3.0.x', name: .NET Core 3.0 } },
-        #  { dotnet: { code: netcoreapp3.1, version: '3.1.x', name: .NET Core 3.1 } },
-        #  { dotnet: { code: net5.0, version: '5.0.x', name: .NET 5.0 } },
-        #  { dotnet: { code: net6.0, version: '6.0.x', name: .NET 6.0 } },
-        #  { dotnet: { code: net7.0, version: '7.0.x', name: .NET 7.0 } },
-        #  { dotnet: { code: net8.0, version: '8.0.x', name: .NET 8.0 } },
-        #]
         buildConfiguration: ['ReleaseFat', 'ReleaseThin']
-        #exclude:
-        #  - agent: { os: macos, architecture: x64, image: macos-13-large }
-        #    runtimeType: { dotnet: { code: netcoreapp3.0, version: '3.0.x', name: .NET Core 3.0 } }
-        #  - agent: { os: macos, architecture: x64, image: macos-13-large }
-        #    runtimeType: { dotnet: { code: netcoreapp3.1, version: '3.1.x', name: .NET Core 3.1 } }
-        #  - agent: { os: macos, architecture: x64, image: macos-13-large }
-        #    runtimeType: { dotnet: { code: net5.0, version: '5.0.x', name: .NET 5.0 } }
     env:
       # Note: Azure Pipelines currently has an issue where if the test name is in the fully qualified name format "namespace.classname.methodname(args)",
       # it only shows "methodname" rather than the fully qualified name (something do with more than 2 periods in the test name).

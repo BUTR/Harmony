@@ -69,7 +69,7 @@ jobs:
       - name: Build and Test .NET
         if: ${{ matrix.runtimeType.dotnet }}
         run: |
-          dotnet test -c ${{ matrix.buildConfiguration }} -f ${{ matrix.buildConfiguration }} Harmony.sln
+          dotnet test -c ${{ matrix.buildConfiguration }} -f ${{ matrix.runtimeType.dotnet.code }} Harmony.sln
 
       - name: Build and Test Mono Windows
         if: ${{ matrix.runtimeType.mono && matrix.agent.os.windows }}

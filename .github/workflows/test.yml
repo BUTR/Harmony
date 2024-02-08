@@ -16,24 +16,27 @@ jobs:
           { os: windows, architecture: x64, image: windows-latest },
           { os: ubuntu, architecture: x86, image: ubuntu-latest },
           { os: ubuntu, architecture: x64, image: ubuntu-latest },
-          { os: macos, architecture: x86, image: macos-13-large },
           { os: macos, architecture: x64, image: macos-13-large },
           { os: macos, architecture: arm64, image: macos-13-xlarge }
         ]
         runtimeType: [
-          framework: { name: net35 },
-          framework: { name: net452 },
-          framework: { name: net472 },
-          framework: { name: net48 },
+          framework: { code: net35, name: .NET 3.5 },
+          framework: { code: net452, name: .NET 4.5.2 },
+          framework: { code: net472, name: .NET 4.7.2 },
+          framework: { code: net48, name: .NET 4.8},
           
-          dotnet: { name: netcoreapp3.0, version: '3.0.x' },
-          dotnet: { name: netcoreapp3.1, version: '3.1.x' },
-          dotnet: { name: net5.0, version: '5.0.x' },
-          dotnet: { name: net6.0, version: '6.0.x' },
-          dotnet: { name: net7.0, version: '7.0.x' },
-          dotnet: { name: net8.0, version: '8.0.x' },
+          dotnet: { code: netcoreapp3.0, version: '3.0.x', name: .NET Core 3.0 },
+          dotnet: { code: netcoreapp3.1, version: '3.1.x', name: .NET Core 3.1 },
+          dotnet: { code: net5.0, version: '5.0.x', name: .NET 5.0 },
+          dotnet: { code: net6.0, version: '6.0.x', name: .NET 6.0 },
+          dotnet: { code: net7.0, version: '7.0.x', name: .NET 7.0 },
+          dotnet: { code: net8.0, version: '8.0.x', name: .NET 8.0},
         ]
         buildConfiguration: [ReleaseFat, ReleaseThin]
+        exclude:
+          - agent.os: macos
+            agent.architecture: [arm64]
+            runtimeType.dotnet.code: [netcoreapp3.0, netcoreapp3.1, net5.0]
     steps:
       - uses: actions/checkout@v2
 
@@ -74,7 +77,7 @@ jobs:
           fi
           
           vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe"
-          "$mono" "$vstest" "HarmonyTests/bin/Release/${{matrix.runtimeType.framework.name}}/HarmonyTests.dll" --Framework:${{matrix.runtimeType.framework.name}}
+          "$mono" "$vstest" "HarmonyTests/bin/Release/${{matrix.runtimeType.framework.code}}/HarmonyTests.dll" --Framework:${{matrix.runtimeType.framework.code}}
 
       - name: Build and Test
         if: ${{ matrix.runtimeType.mono && !matrix.agent.os.windows }}

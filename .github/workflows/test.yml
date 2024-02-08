@@ -1,68 +1,68 @@
 on:
-    push:
-        branches:
-        - master
-    pull_request:
-        branches:
-        - master
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 jobs:
-    build:
-        runs-on: ${{ matrix.machine.os }}
-        strategy:
-            matrix:
-                runtimeType: [
-                  framework: { name: net35 },
-                  framework: { name: net452 },
-                  framework: { name: net472 },
-                  framework: { name: net48 },
-                  
-                  dotnet: { name: netcoreapp3.0, version: '3.0.x' },
-                  dotnet: { name: netcoreapp3.1, version: '3.1.x' },
-                  dotnet: { name: net5.0, version: '5.0.x' },
-                  dotnet: { name: net6.0, version: '6.0.x' },
-                  dotnet: { name: net7.0, version: '7.0.x' },
-                  dotnet: { name: net8.0, version: '8.0.x' }
-                ]
-                machine: [
-                  { os: windows-latest, architecture: [x86, x64] },
-                  { os: ubuntu-latest, architecture: [x86, x64] },
-                  { os: macos-13-large, architecture: [x86, x64] }
-                  { os: macos-13-xlarge, architecture: [arm64] }
-                ]
-                buildConfiguration: [ReleaseFat, ReleaseThin]
-        steps:
-          - uses: actions/checkout@v2
+  build:
+    runs-on: ${{ matrix.machine.os }}
+    strategy:
+      matrix:
+        machine: [
+          { os: windows-latest, architecture: [x86, x64] },
+          { os: ubuntu-latest, architecture: [x86, x64] },
+          { os: macos-13-large, architecture: [x86, x64] }
+          { os: macos-13-xlarge, architecture: [arm64] }
+        ]
+        runtimeType: [
+          framework: { name: net35 },
+          framework: { name: net452 },
+          framework: { name: net472 },
+          framework: { name: net48 },
+          
+          dotnet: { name: netcoreapp3.0, version: '3.0.x' },
+          dotnet: { name: netcoreapp3.1, version: '3.1.x' },
+          dotnet: { name: net5.0, version: '5.0.x' },
+          dotnet: { name: net6.0, version: '6.0.x' },
+          dotnet: { name: net7.0, version: '7.0.x' },
+          dotnet: { name: net8.0, version: '8.0.x' },
+        ]
+        buildConfiguration: [ReleaseFat, ReleaseThin]
+    steps:
+      - uses: actions/checkout@v2
 
-          - name: Setup .NET
-            if: ${{ matrix.runtimeType == 'dotnet' }}
-            uses: actions/setup-dotnet@v1
-            with:
-              dotnet-version: ${{ matrix.runtimeType.dotnet.version }}
+      - name: Setup .NET
+        if: ${{ matrix.runtimeType == 'dotnet' }}
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ matrix.runtimeType.dotnet.version }}
 
-          - name: Setup Mono Windows x86
-            if: ${{ matrix.runtimeType == 'mono' && matrix.machine.os == 'windows' && matrix.machine.architecture == 'x86' }}
-            run: |
-              curl -L https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0-gtksharp-2.12.45-win32-0.msi -o mono.msi
-              msiexec /i mono.msi /quiet
-            shell: cmd
+      - name: Setup Mono Windows x86
+        if: ${{ matrix.runtimeType == 'mono' && matrix.machine.os == 'windows' && matrix.machine.architecture == 'x86' }}
+        run: |
+          curl -L https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0-gtksharp-2.12.45-win32-0.msi -o mono.msi
+          msiexec /i mono.msi /quiet
+        shell: cmd
 
-          - name: Setup Mono Windows x64
-            if: ${{ matrix.runtimeType == 'mono' && matrix.machine.os == 'windows' && matrix.machine.architecture == 'x64' }}
-            run: |
-              curl -L https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0.199-x64-0.msi -o mono.msi
-              msiexec /i mono.msi /quiet
-            shell: cmd
+      - name: Setup Mono Windows x64
+        if: ${{ matrix.runtimeType == 'mono' && matrix.machine.os == 'windows' && matrix.machine.architecture == 'x64' }}
+        run: |
+          curl -L https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0.199-x64-0.msi -o mono.msi
+          msiexec /i mono.msi /quiet
+        shell: cmd
 
-          - name: Build and Test
-            run: |
-              dotnet build -c ${{ matrix.buildConfiguration }} Harmony.sln
-              
-              if [ ${{ matrix.runtimeType == 'dotnet' || matrix.runtimeType == 'framework' }} ]; then
-                dotnet test -c ${{ matrix.buildConfiguration }} --no-build Harmony.sln
-              fi
-              
-              if [ ${{ matrix.runtimeType == 'mono' }} ]; then
-                mono="%ProgramFiles%/Mono/bin/mono.exe"
-                vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe"
-                "$mono" "$vstest" "HarmonyTests/bin/Release/${{matrix.runtimeType.framework.name}}/HarmonyTests.dll" --Framework:${{matrix.runtimeType.framework.name}}
-              fi
+      - name: Build and Test
+        run: |
+          dotnet build -c ${{ matrix.buildConfiguration }} Harmony.sln
+          
+          if [ ${{ matrix.runtimeType == 'dotnet' || matrix.runtimeType == 'framework' }} ]; then
+            dotnet test -c ${{ matrix.buildConfiguration }} --no-build Harmony.sln
+          fi
+          
+          if [ ${{ matrix.runtimeType == 'mono' }} ]; then
+            mono="%ProgramFiles%/Mono/bin/mono.exe"
+            vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe"
+            "$mono" "$vstest" "HarmonyTests/bin/Release/${{matrix.runtimeType.framework.name}}/HarmonyTests.dll" --Framework:${{matrix.runtimeType.framework.name}}
+          fi

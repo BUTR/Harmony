@@ -11,17 +11,17 @@ jobs:
         strategy:
             matrix:
                 runtimeType: [
-                  fx: { framework: net35 },
-                  fx: { framework: net452 },
-                  fx: { framework: net472 },
-                  fx: { framework: net48 },
+                  framework: { name: net35 },
+                  framework: { name: net452 },
+                  framework: { name: net472 },
+                  framework: { name: net48 },
                   
-                  dotnet: { framework: netcoreapp3.0, version: '3.0.x' },
-                  dotnet: { framework: netcoreapp3.1, version: '3.1.x' },
-                  dotnet: { framework: net5.0, version: '5.0.x' },
-                  dotnet: { framework: net6.0, version: '6.0.x' },
-                  dotnet: { framework: net7.0, version: '7.0.x' },
-                  dotnet: { framework: net8.0, version: '8.0.x' },
+                  dotnet: { name: netcoreapp3.0, version: '3.0.x' },
+                  dotnet: { name: netcoreapp3.1, version: '3.1.x' },
+                  dotnet: { name: net5.0, version: '5.0.x' },
+                  dotnet: { name: net6.0, version: '6.0.x' },
+                  dotnet: { name: net7.0, version: '7.0.x' },
+                  dotnet: { name: net8.0, version: '8.0.x' },
                 ]
                 machine: [
                   { os: windows-latest, architecture: [x86, x64] },
@@ -57,12 +57,12 @@ jobs:
             run: |
               dotnet build -c ${{ matrix.buildConfiguration }} Harmony.sln
               
-              if [ ${{ matrix.runtimeType == 'dotnet' || matrix.runtimeType == 'fx' }} ]; then
+              if [ ${{ matrix.runtimeType == 'dotnet' || matrix.runtimeType == 'framework' }} ]; then
                 dotnet test -c ${{ matrix.buildConfiguration }} --no-build Harmony.sln
               fi
               
-              if [ ${{ matrix.runtimeType }} == 'mono' ]; then
+              if [ ${{ matrix.runtimeType == 'mono' }} ]; then
                 mono="%ProgramFiles%/Mono/bin/mono.exe"
                 vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe"
-                "$mono" "$vstest" "HarmonyTests/bin/Release/${{matrix.runtimeType.mono.framework}}/HarmonyTests.dll" --Framework:${{matrix.runtimeType.mono.framework}}
+                "$mono" "$vstest" "HarmonyTests/bin/Release/${{matrix.runtimeType.framework.name}}/HarmonyTests.dll" --Framework:${{matrix.runtimeType.framework.name}}
               fi

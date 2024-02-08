@@ -7,7 +7,7 @@ on:
       - master
 jobs:
   build:
-    name: ${{ matrix.agent.os }} ${{ matrix.agent.architecture }} ${{ matrix.runtimeType.framework.name }} ${{ matrix.buildConfiguration }}
+    name: ${{ matrix.agent.os }} ${{ matrix.agent.architecture }} ${{ matrix.runtimeType.framework.name }}${{ matrix.runtimeType.dotnet.name }} ${{ matrix.buildConfiguration }}
     runs-on: ${{ matrix.agent.image }}
     strategy:
       matrix:

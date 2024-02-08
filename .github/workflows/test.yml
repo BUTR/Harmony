@@ -13,7 +13,7 @@ jobs:
         machine: [
           { os: windows-latest, architecture: [x86, x64] },
           { os: ubuntu-latest, architecture: [x86, x64] },
-          { os: macos-13-large, architecture: [x86, x64] }
+          { os: macos-13-large, architecture: [x86, x64] },
           { os: macos-13-xlarge, architecture: [arm64] }
         ]
         runtimeType: [

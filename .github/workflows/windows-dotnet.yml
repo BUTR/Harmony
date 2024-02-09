@@ -28,34 +28,29 @@ jobs:
           "channel=$channel" | Out-File -FilePath $env:GITHUB_ENV -Append;
         shell: pwsh
         
-      - name: Set DotNetRoot env
-        if: startsWith('${{inputs.image}}', 'windows-')
+      - name: Set ProgramFiles env
         run: |
-          if ('${{ startsWith(inputs.image, 'windows-') && inputs.architecture == 'x86'}}' -eq 'true') {
-            $dotnetroot = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::ProgramFilesX86);
-            "dotnetroot=$dotnetroot/dotnet" | Out-File -FilePath $env:GITHUB_ENV -Append;
+          if ('${{ inputs.architecture == 'x86'}}' -eq 'true') {
+            $programfiles = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::ProgramFilesX86);
+            "programfiles=$programfiles" | Out-File -FilePath $env:GITHUB_ENV -Append;
           }
-          if ('${{ startsWith(inputs.image, 'windows-') && inputs.architecture == 'x64'}}' -eq 'true') {
-            $dotnetroot = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::ProgramFiles);
-            "dotnetroot=$dotnetroot/dotnet" | Out-File -FilePath $env:GITHUB_ENV -Append;
+          if ('${{ inputs.architecture == 'x64'}}' -eq 'true') {
+            programfiles = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::ProgramFiles);
+            "dotnetroot=$programfiles" | Out-File -FilePath $env:GITHUB_ENV -Append;
           }
-          #if ('${{ startsWith(inputs.image, 'windows-') && inputs.architecture == 'arm64'}}' -eq 'true') {
-          #  $dotnetroot = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::ProgramFiles);
-          #  "dotnetroot=$dotnetroot" | Out-File -FilePath $env:GITHUB_ENV -Append;
-          #}
         shell: pwsh
 
       - name: Setup .NET Latest STS/LTS ${{inputs.architecture}}
         run: |
           Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
-          .\dotnet-install.ps1 -Channel LTS -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.dotnetroot}}" -NoPath;
-          .\dotnet-install.ps1 -Channel STS -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.dotnetroot}}" -NoPath;
+          .\dotnet-install.ps1 -Channel LTS -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.programfiles}}/dotnet" -NoPath;
+          .\dotnet-install.ps1 -Channel STS -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.programfiles}}/dotnet" -NoPath;
         shell: pwsh
 
       - name: Setup .NET ${{env.channel}} ${{inputs.architecture}}
         run: |
           Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
-          .\dotnet-install.ps1 -Channel ${{env.channel}} -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.dotnetroot}}" -NoPath;
+          .\dotnet-install.ps1 -Channel ${{env.channel}} -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.programfiles}}/dotnet" -NoPath;
         shell: pwsh
 
       - name: Build

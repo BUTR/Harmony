@@ -3,6 +3,9 @@ name: Template Testing Build
 on:
   workflow_call:
     inputs:
+      os:
+        required: true
+        type: string
       build_configuration:
         required: true
         type: string
@@ -12,12 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set Channel env
-        run: |
-          $channel = '${{inputs.target_framework}}'.Replace('coreapp', '').Replace('net', '');
-          "channel=$channel" | Out-File -FilePath $env:GITHUB_ENV -Append;
-        shell: pwsh
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
@@ -29,5 +26,5 @@ jobs:
       - name: Upload Build Output
         uses: actions/upload-artifact@v4
         with:
-          name: build-output-${{inputs.build_configuration}}
+          name: build-output-${{inputs.os}}-${{inputs.build_configuration}}
           path: ./*/bin/**/*

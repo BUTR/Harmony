@@ -22,9 +22,11 @@ jobs:
     name: Build Binaries
     strategy:
       matrix:
+        os: [ 'windows', 'ubuntu', 'macos' ]
         build_configuration: [ 'ReleaseFat', 'ReleaseThin' ]
     uses: ./.github/workflows/test-build.yml
     with:
+      os: ${{ matrix.os }}
       build_configuration: ${{ matrix.build_configuration }}
 
   windows-dotnet:
@@ -74,14 +76,14 @@ jobs:
     needs: build-binaries
     strategy:
       matrix:
-        image: [ { code: 'ubuntu-latest', name: 'ubuntu' }, { code: 'macos-13', name: 'macos' }]
+        image: [ { code: 'ubuntu-latest', os: 'ubuntu' }, { code: 'macos-13', os: 'macos' }]
         architecture: ['x64']
         target_framework: ['netcoreapp3.0', 'netcoreapp3.1', 'net5.0', 'net6.0', 'net7.0', 'net8.0']
         build_configuration: ['ReleaseFat', 'ReleaseThin']
     uses: ./.github/workflows/test-unix-dotnet.yml
     with:
+      os: ${{ matrix.image.os }}
       image: ${{ matrix.image.code }}
-      image-name: ${{ matrix.image.name }}
       architecture: ${{ matrix.architecture }}
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
@@ -91,14 +93,14 @@ jobs:
     needs: build-binaries
     strategy:
       matrix:
-        image: [ { code: 'ubuntu-latest', name: 'ubuntu' }, { code: 'macos-13', name: 'macos' }]
+        image: [ { code: 'ubuntu-latest', os: 'ubuntu' }, { code: 'macos-13', os: 'macos' }]
         architecture: ['x64']
         target_framework: ['net35', 'net452', 'net472', 'net48']
         build_configuration: ['ReleaseFat', 'ReleaseThin']
     uses: ./.github/workflows/test-unix-mono.yml
     with:
+      os: ${{ matrix.image.os }}
       image: ${{ matrix.image.code }}
-      image-name: ${{ matrix.image.name }}
       architecture: ${{ matrix.architecture }}
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}

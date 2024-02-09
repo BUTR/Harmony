@@ -33,7 +33,14 @@ jobs:
           "channel=$channel" | Out-File -FilePath $env:GITHUB_ENV -Append
         shell: pwsh
 
-      - name: Setup .NET
+      - name: Setup .NET ${{env.channel}}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{env.channel}}
+        env:
+          PROCESSOR_ARCHITECTURE: ${{inputs.architecture}}
+          
+      - name: Setup .NET ${{env.channel}} ${{inputs.architecture}}
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{env.channel}}

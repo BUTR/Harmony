@@ -41,13 +41,23 @@ jobs:
         if: inputs.architecture == 'x86'
         run: |
           curl -L https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0-gtksharp-2.12.45-win32-0.msi -o mono.msi;
-          msiexec /i mono.msi /quiet;
+          $file = "mono.msi" 
+          $log = "install.log"
+          $procMain = Start-Process "msiexec" "/i `"$file`" /qn /l*! `"$log`"" -NoNewWindow -PassThru
+          $procLog = Start-Process "pwsh" "Get-Content -Path `"$log`" -Wait" -NoNewWindow -PassThru
+          $procMain.WaitForExit()
+          $procLog.Kill()
 
       - name: Setup Mono x64
         if: inputs.architecture == 'x64'
         run: |
           curl -L https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0.199-x64-0.msi -o mono.msi;
-          msiexec /i mono.msi /quiet;
+          $file = "mono.msi" 
+          $log = "install.log"
+          $procMain = Start-Process "msiexec" "/i `"$file`" /qn /l*! `"$log`"" -NoNewWindow -PassThru
+          $procLog = Start-Process "pwsh" "Get-Content -Path `"$log`" -Wait" -NoNewWindow -PassThru
+          $procMain.WaitForExit()
+          $procLog.Kill()
 
       #- name: Build
       #  run: |

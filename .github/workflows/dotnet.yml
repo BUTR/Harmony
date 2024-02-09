@@ -43,13 +43,14 @@ jobs:
       - name: Setup .NET Latest ${{inputs.architecture}}
         run: |
           Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
-          .\dotnet-install.ps1 -Channel Current -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.progfiles}}/dotnet}}" -NoPath
+          .\dotnet-install.ps1 -Channel LTS -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.progfiles}}/dotnet" -NoPath
+          .\dotnet-install.ps1 -Channel STS -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.progfiles}}/dotnet" -NoPath
         shell: pwsh
 
       - name: Setup .NET ${{env.channel}} ${{inputs.architecture}}
         run: |
           Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
-          .\dotnet-install.ps1 -Channel ${{env.channel}} -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.progfiles}}/dotnet}}" -NoPath
+          .\dotnet-install.ps1 -Channel ${{env.channel}} -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.progfiles}}/dotnet" -NoPath
         shell: pwsh
 
       - name: Build

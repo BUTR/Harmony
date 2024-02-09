@@ -16,10 +16,16 @@ jobs:
           pattern: test-results-*
           path: ./test-results
 
-      - name: Test Report Upload
-        uses: dorny/test-reporter@v1
-        if: success() || failure()
+      #- name: Test Report Upload
+      #  uses: dorny/test-reporter@v1
+      #  if: success() || failure()
+      #  with:
+      #    name: .NET Tests
+      #    path: 'test-results/**/*.trx'
+      #    reporter: dotnet-trx
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action/composite@v2
+        if: always()
         with:
-          name: .NET Tests
-          path: 'test-results/**/*.trx'
-          reporter: dotnet-trx
+          files: test-results/**/*.trx

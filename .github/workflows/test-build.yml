@@ -11,6 +11,9 @@ on:
       build_configuration:
         required: true
         type: string
+      publish:
+        required: true
+        type: boolean
 jobs:
   build-binaries:
     name: Build Binaries
@@ -30,3 +33,9 @@ jobs:
         with:
           name: build-output-${{inputs.os}}-${{inputs.build_configuration}}
           path: ./*/bin/**/*
+          
+      - name: Upload Harmony zip
+        if: ${{inputs.publish}}
+        uses: actions/upload-artifact@v4
+        with:
+          path: ./Harmony/bin/Harmony*.zip

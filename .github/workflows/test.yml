@@ -24,7 +24,9 @@ env:
 
 jobs:
   
+  # https://stackoverflow.com/a/77549656
   variables:
+    name: Variable Accessibility Workaround for Jobs
     runs-on: ubuntu-latest
     outputs:
       BUILD_CONFIGURATIONS: ${{ env.BUILD_CONFIGURATIONS }}
@@ -50,10 +52,11 @@ jobs:
     with:
       os: ${{ matrix.os }}
       build_configuration: ${{ matrix.build_configuration }}
+      publish: ${{ matrix.os == 'windows' }}
 
   windows-dotnet:
     name: Windows .NET x86/x64
-    needs: [variables, build-binaries]
+    needs: [build-binaries]
     strategy:
       matrix:
         architecture: ['x86', 'x64']
@@ -68,7 +71,7 @@ jobs:
 
   windows-framework:
     name: Windows .NET Framework x86/x64
-    needs: [variables, build-binaries]
+    needs: [build-binaries]
     strategy:
       matrix:
         architecture: ['x86', 'x64']
@@ -83,7 +86,7 @@ jobs:
 
   windows-mono:
     name: Windows Mono x86/x64
-    needs: [variables, build-binaries]
+    needs: [build-binaries]
     strategy:
       matrix:
         architecture: ['x86', 'x64']
@@ -98,7 +101,7 @@ jobs:
 
   ubuntu-macos-x64-dotnet:
     name: Ubuntu/MacOS .NET x64
-    needs: [variables, build-binaries]
+    needs: [build-binaries]
     strategy:
       matrix:
         image: [ { code: 'ubuntu-latest', os: 'ubuntu' }, { code: 'macos-13', os: 'macos' }]
@@ -116,7 +119,7 @@ jobs:
 
   ubuntu-macos-x64-mono:
     name: Ubuntu/MacOS Mono x64
-    needs: [variables, build-binaries]
+    needs: [ build-binaries]
     strategy:
       matrix:
         image: [ { code: 'ubuntu-latest', os: 'ubuntu' }, { code: 'macos-13', os: 'macos' }]
@@ -135,7 +138,7 @@ jobs:
   macos-arm64-dotnet:
     name: MacOS .NET arm64
     if: false
-    needs: [variables, build-binaries]
+    needs: [build-binaries]
     strategy:
       matrix:
         image: [ { code: 'macos-14', os: 'macos' }]

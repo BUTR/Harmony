@@ -128,10 +128,35 @@ jobs:
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
       run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'
-      
+
+  ubuntu-arm64-dotnet:
+    name: Ubuntu .NET arm64
+    needs: [variables, build-binaries]
+    strategy:
+      matrix:
+        target_framework: ${{fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS) }}
+        build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
+    uses: ./.github/workflows/test-qemu-dotnet.yml
+    with:
+      target_framework: ${{ matrix.target_framework }}
+      build_configuration: ${{ matrix.build_configuration }}
+      run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'
+
+  ubuntu-arm64-mono:
+    name: MacOS .NET arm64
+    needs: [variables, build-binaries]
+    strategy:
+      matrix:
+        target_framework: ${{fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS) }}
+        build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
+    uses: ./.github/workflows/test-qemu-mono.yml
+    with:
+      target_framework: ${{ matrix.target_framework }}
+      build_configuration: ${{ matrix.build_configuration }}
+      run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'
+
   macos-arm64-dotnet:
     name: MacOS .NET arm64
-    if: false
     needs: [variables, build-binaries]
     strategy:
       matrix:

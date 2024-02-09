@@ -42,7 +42,7 @@ jobs:
         with:
           name: build-output-${{inputs.os}}-${{inputs.build_configuration}}
           path: HarmonyTests/bin/**/*
-          
+
       - name: Upload Harmony zip
         if: ${{inputs.publish}}
         uses: actions/upload-artifact@v4

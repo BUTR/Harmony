@@ -1,17 +1,8 @@
-name: Template Testing Unix .NET
+name: Template Testing Qemu Mono
 
 on:
   workflow_call:
     inputs:
-      os:
-        required: true
-        type: string
-      image:
-        required: true
-        type: string
-      architecture:
-        required: true
-        type: string
       target_framework:
         required: true
         type: string
@@ -35,22 +26,11 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
-  unix-net:
-    name: .NET ${{ inputs.os }}-${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
+  ubuntu-mono-arm64:
+    name: Mono ubuntu-arm64 ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
     runs-on: ${{inputs.image}}
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set Channel env
-        run: |
-          $channel = '${{inputs.target_framework}}'.Replace('coreapp', '').Replace('net', '');
-          "channel=$channel" | Out-File -FilePath $env:GITHUB_ENV -Append;
-        shell: pwsh
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{env.channel}}
 
       - name: Download Build Cache
         uses: actions/download-artifact@v4
@@ -58,13 +38,33 @@ jobs:
           name: build-output-${{inputs.os}}-${{inputs.build_configuration}}
           path: HarmonyTests/bin/
 
+      - uses: uraimo/run-on-arch-action@v2.7.1
+        name: Test .NET
+        id: build
+        with:
+          arch: aarch64
+          distro: ubuntu_latest
+          
+          dockerRunArgs: |
+            --volume "${PWD}/src:/src"
+          
+          shell: /bin/bash
+          
+          install: |
+            apt-get update
+            apt-get install -y dotnet-sdk-8.0
+            apt-get install -y mono-devel
+          
+          run: |
+            dotnet test "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" -f ${{inputs.target_framework}} -l trx -l "console;verbosity=normal" --blame -- ${{inputs.run_settings_args}};
+
+
       - name: Test .NET
         run: |
-          dotnet test "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" -f ${{inputs.target_framework}} -l trx -l "console;verbosity=normal" --blame -- ${{inputs.run_settings_args}};
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
         if: ${{inputs.upload_tests && (success() || failure())}}
         with:
-          name: test-results-net-${{inputs.os}}-${{inputs.architecture}}-${{inputs.target_framework}}-${{inputs.build_configuration}}
+          name: test-results-mono-ubuntu-arm64-${{inputs.target_framework}}-${{inputs.build_configuration}}
           path: '**/*.trx'

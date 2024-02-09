@@ -3,15 +3,6 @@ name: Template Testing Unix .NET
 on:
   workflow_call:
     inputs:
-      os:
-        required: true
-        type: string
-      image:
-        required: true
-        type: string
-      architecture:
-        required: true
-        type: string
       target_framework:
         required: true
         type: string
@@ -36,7 +27,7 @@ env:
 
 jobs:
   unix-net:
-    name: .NET ${{ inputs.os }}-${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
+    name: .NET ubuntu-arm64 ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
     runs-on: ${{inputs.image}}
     steps:
       - uses: actions/checkout@v4
@@ -47,20 +38,31 @@ jobs:
           "channel=$channel" | Out-File -FilePath $env:GITHUB_ENV -Append;
         shell: pwsh
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{env.channel}}
-
       - name: Download Build Cache
         uses: actions/download-artifact@v4
         with:
           name: build-output-${{inputs.os}}-${{inputs.build_configuration}}
           path: HarmonyTests/bin/
 
-      - name: Test .NET
-        run: |
-          dotnet test "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" -f ${{inputs.target_framework}} -l trx -l "console;verbosity=normal" --blame -- ${{inputs.run_settings_args}};
+      - uses: uraimo/run-on-arch-action@v2.7.1
+        name: Run commands
+        id: build
+        with:
+          arch: aarch64
+          distro: ubuntu_latest
+          
+          dockerRunArgs: |
+            --volume "${PWD}/src:/src"
+          
+          shell: /bin/bash
+          
+          install: |
+            apt-get update
+            apt-get install -y dotnet-sdk-8.0
+            apt-get install -y dotnet-sdk-${{env.channel}}
+          
+          run: |
+            dotnet test "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" -f ${{inputs.target_framework}} -l trx -l "console;verbosity=normal" --blame -- ${{inputs.run_settings_args}};
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v4

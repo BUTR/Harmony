@@ -52,7 +52,7 @@ jobs:
           
           install: |
             apt-get update
-            apt-get install -y wget mono-devel
+            apt-get install -y wget libc6 libgcc-s1 libgssapi-krb5-2 libicu70 liblttng-ust1 libssl3 libstdc++6 libunwind8 zlib1g mono-devel
             
             wget https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.sh;
             chmod +x dotnet-install.sh;

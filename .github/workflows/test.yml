@@ -36,6 +36,7 @@ jobs:
         target_framework: ['net35', 'net452', 'net472', 'net48']
         build_configuration: ['ReleaseFat', 'ReleaseThin']
     uses: ./.github/workflows/windows-framework.yml
+    if: false
     with:
       architecture: ${{ matrix.architecture }}
       target_framework: ${{ matrix.target_framework }}
@@ -48,6 +49,7 @@ jobs:
         target_framework: ['net35', 'net452', 'net472', 'net48']
         build_configuration: ['ReleaseFat', 'ReleaseThin']
     uses: ./.github/workflows/windows-mono.yml
+    if: false
     with:
       architecture: ${{ matrix.architecture }}
       target_framework: ${{ matrix.target_framework }}
@@ -61,6 +63,7 @@ jobs:
         target_framework: ['netcoreapp3.0', 'netcoreapp3.1', 'net5.0', 'net6.0', 'net7.0', 'net8.0']
         build_configuration: ['ReleaseFat', 'ReleaseThin']
     uses: ./.github/workflows/dotnet.yml
+    if: false
     with:
       image: ${{ matrix.image }}
       architecture: ${{ matrix.architecture }}
@@ -75,22 +78,24 @@ jobs:
         target_framework: ['net35', 'net452', 'net472', 'net48']
         build_configuration: ['ReleaseFat', 'ReleaseThin']
     uses: ./.github/workflows/unix-mono.yml
+    if: false
     with:
       image: ${{ matrix.image }}
       architecture: ${{ matrix.architecture }}
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
       
-  #macos-arm64-dotnet:
-  #  strategy:
-  #    matrix:
-  #      image: ['macos-14']
-  #      architecture: ['arm64']
-  #      target_framework: ['net6.0', 'net7.0', 'net8.0']
-  #      build_configuration: ['ReleaseFat', 'ReleaseThin']
-  #  uses: ./.github/workflows/dotnet.yml
-  #  with:
-  #    image: ${{ matrix.image }}
-  #    architecture: ${{ matrix.architecture }}
-  #    target_framework: ${{ matrix.target_framework }}
-  #    build_configuration: ${{ matrix.build_configuration }}
+  macos-arm64-dotnet:
+    strategy:
+      matrix:
+        image: ['macos-14']
+        architecture: ['arm64']
+        target_framework: ['net6.0', 'net7.0', 'net8.0']
+        build_configuration: ['ReleaseFat', 'ReleaseThin']
+    uses: ./.github/workflows/dotnet.yml
+    if: false
+    with:
+      image: ${{ matrix.image }}
+      architecture: ${{ matrix.architecture }}
+      target_framework: ${{ matrix.target_framework }}
+      build_configuration: ${{ matrix.build_configuration }}

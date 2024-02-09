@@ -26,9 +26,10 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Setup .NET Sdk ${{inputs.architecture}}
-        uses: actions/setup-dotnet@v3
-        env:
-          PROCESSOR_ARCHITECTURE: ${{inputs.architecture}}
+        run: |
+          Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
+          .\dotnet-install.ps1 -Architecture ${{inputs.architecture}} -Runtime dotnet
+        shell: pwsh
 
       - run: |
           $channel = '${{inputs.target_framework}}'.Replace('coreapp', '').Replace('net', '');
@@ -36,12 +37,11 @@ jobs:
         shell: pwsh
 
       - name: Setup .NET ${{env.channel}}
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: ${{env.channel}}
-        env:
-          PROCESSOR_ARCHITECTURE: ${{inputs.architecture}}
-          
+        run: |
+          Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
+          .\dotnet-install.ps1 -Channel ${{env.channel}} -Architecture ${{inputs.architecture}} -Runtime dotnet
+        shell: pwsh
+
       - name: Build
         run: |
           dotnet build -c ${{inputs.build_configuration}} -f ${{inputs.target_framework}} Harmony.sln

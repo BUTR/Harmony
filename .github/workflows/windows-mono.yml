@@ -25,7 +25,7 @@ jobs:
       - name: Set DotNetRoot env
         if: startsWith('${{inputs.image}}', 'windows-')
         run: |
-          if ('${{ startsWith('inputs.image, 'windows-') && inputs.architecture == 'x86'}}' -eq 'true') {
+          if ('${{ startsWith(inputs.image, 'windows-') && inputs.architecture == 'x86'}}' -eq 'true') {
             $dotnetroot = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::ProgramFilesX86);
             "dotnetroot=$dotnetroot/dotnet" | Out-File -FilePath $env:GITHUB_ENV -Append;
           }

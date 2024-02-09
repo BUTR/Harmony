@@ -1,4 +1,4 @@
-name: Unix .NET
+name: Template Windows .NET
 
 on:
   workflow_call:
@@ -15,7 +15,7 @@ on:
 
 jobs:
   unix-net:
-    name: .NET windows-${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
+    name: .NET ${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
     runs-on: windows-latest
     env:
       run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{inputs.architecture}}'

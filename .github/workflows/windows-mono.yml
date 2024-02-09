@@ -1,4 +1,4 @@
-name: Windows Mono
+name: Template Windows Mono
 
 on:
   workflow_call:
@@ -15,7 +15,7 @@ on:
 
 jobs:
   windows-mono:
-    name: Mono windows-${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
+    name: Mono ${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
     runs-on: windows-latest
     env:
       run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{inputs.architecture}}'
@@ -59,7 +59,7 @@ jobs:
           set -x
           
           # Execute the tests via mono + vstest.console.
-          mono="$${env.programfiles}}/Mono/bin/mono.exe"
+          mono="${{env.programfiles}}/Mono/bin/mono.exe"
           vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe"
           "$mono" "$vstest" "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" --Framework:${{inputs.target_framework}} --logger:trx --ResultsDirectory:"${{ github.workspace }}/TestResults" --blame -- ${{env.run_settings_args}}
         shell: bash

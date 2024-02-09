@@ -1,4 +1,4 @@
-name: Windows .NET Framework
+name: Template Windows .NET Framework
 
 on:
   workflow_call:
@@ -15,7 +15,7 @@ on:
 
 jobs:
   windows-net-framework:
-    name: .NET FX windows-${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
+    name: .NET FX ${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
     runs-on: windows-2019
     env:
       run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{inputs.architecture}}'

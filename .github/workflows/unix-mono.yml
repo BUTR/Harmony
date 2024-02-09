@@ -1,9 +1,12 @@
-name: Unix Mono
+name: Template Unix Mono
 
 on:
   workflow_call:
     inputs:
       image:
+        required: true
+        type: string
+      image-name:
         required: true
         type: string
       architecture:
@@ -18,7 +21,7 @@ on:
 
 jobs:
   unix-mono:
-    name: Mono ${{ inputs.image }}-${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
+    name: Mono ${{ inputs.image-name }}-${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
     runs-on: ${{inputs.image}}
     env:
       run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{inputs.architecture}}'

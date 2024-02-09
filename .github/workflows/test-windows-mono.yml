@@ -80,8 +80,10 @@ jobs:
           "$mono" "$vstest" "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" --Framework:${{inputs.target_framework}} --logger:trx --ResultsDirectory:"${{ github.workspace }}/TestResults" --blame -- ${{inputs.run_settings_args}}
         shell: bash
 
-      #- name: Parse Trx files
-      #  uses: NasAmin/trx-parser@v0.5.0
-      #  with:
-      #    TRX_PATH: ${{ github.workspace }}/TestResults #This should be the path to your TRX files
-      #    REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}   
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: .NET Tests
+          path: ./TestResults
+          reporter: dotnet-trx

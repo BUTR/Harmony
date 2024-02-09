@@ -153,3 +153,14 @@ jobs:
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
       run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'
+
+  cleanup-build-output:
+    name: Cleanup Build Output
+    needs: [windows-dotnet, windows-framework, windows-mono, ubuntu-macos-x64-dotnet, ubuntu-macos-x64-mono, macos-arm64-dotnet]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - uses: geekyeggo/delete-artifact@v4
+        with:
+          name: |
+            build-output-*

@@ -52,12 +52,12 @@ jobs:
 
       - name: Test .NET
         run: |
-          dotnet test Harmony.sln --no-build -c ${{inputs.build_configuration}} -f ${{inputs.target_framework}} --logger trx --results-directory ./TestResults --blame -- ${{inputs.run_settings_args}}
+          dotnet test Harmony.sln --no-build -c ${{inputs.build_configuration}} -f ${{inputs.target_framework}} --logger trx --blame -- ${{inputs.run_settings_args}}
 
       - name: Test Report
         uses: dorny/test-reporter@v1
         if: success() || failure()
         with:
           name: .NET Tests
-          path: ./TestResults/*.trx
+          path: '**/TestResults/*.trx'
           reporter: dotnet-trx

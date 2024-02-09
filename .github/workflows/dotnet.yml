@@ -33,17 +33,12 @@ jobs:
           "channel=$channel" | Out-File -FilePath $env:GITHUB_ENV -Append
         shell: pwsh
 
-      - name: Setup .NET Windows x86
-        if: startsWith(inputs.image, 'windows') && inputs.architecture == 'x86'
-        run: |
-          Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
-          .\dotnet-install.ps1 -Channel ${{env.channel}} -Architecture x86 -Runtime dotnet -InstallDir "${Env:ProgramFiles(x86)}\dotnet" -NoPath
-        shell: pwsh
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{env.channel}}
+        env:
+          PROCESSOR_ARCHITECTURE: ${{inputs.architecture}}
 
       - name: Build
         run: |

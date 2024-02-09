@@ -92,7 +92,7 @@ jobs:
     name: MacOS .NET arm64
     strategy:
       matrix:
-        image: [ code: 'macos-14', name: 'macos' }]
+        image: [ { code: 'macos-14', name: 'macos' }]
         architecture: ['arm64']
         target_framework: ['net6.0', 'net7.0', 'net8.0']
         build_configuration: ['ReleaseFat', 'ReleaseThin']

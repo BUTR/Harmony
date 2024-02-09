@@ -41,7 +41,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-output-${{inputs.os}}-${{inputs.build_configuration}}
-          path: ./*/bin/**/*
+          path: |
+            ./*/bin/**/*
+            ./*/obj/**/*
+            !**/*.zip
+            !**/*.nupkg
           
       - name: Upload Harmony zip
         if: ${{inputs.publish}}

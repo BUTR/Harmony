@@ -30,7 +30,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Setup .NET Sdk
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
 
       #- name: Build
       #  run: |
@@ -50,4 +50,4 @@ jobs:
       #  uses: NasAmin/trx-parser@v0.5.0
       #  with:
       #    TRX_PATH: ${{ github.workspace }}/TestResults #This should be the path to your TRX files
-      #    REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
+      #    REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }} 

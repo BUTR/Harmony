@@ -16,6 +16,7 @@ env:
 
 jobs:
   windows-dotnet:
+    name: Windows .NET x86/x64
     strategy:
       matrix:
         architecture: ['x86', 'x64']
@@ -28,6 +29,7 @@ jobs:
       build_configuration: ${{ matrix.build_configuration }}
 
   windows-framework:
+    name: Windows .NET Framework x86/x64
     strategy:
       matrix:
         architecture: ['x86', 'x64']
@@ -40,6 +42,7 @@ jobs:
       build_configuration: ${{ matrix.build_configuration }}
 
   windows-mono:
+    name: Windows Mono x86/x64
     strategy:
       matrix:
         architecture: ['x86', 'x64']
@@ -52,6 +55,7 @@ jobs:
       build_configuration: ${{ matrix.build_configuration }}
 
   ubuntu-macos-x64-dotnet:
+    name: Ubuntu/MacOS .NET x64
     strategy:
       matrix:
         image: ['ubuntu-latest', 'macos-13']
@@ -66,6 +70,7 @@ jobs:
       build_configuration: ${{ matrix.build_configuration }}
 
   ubuntu-macos-x64-mono:
+    name: Ubuntu/MacOS Mono x64
     strategy:
       matrix:
         image: ['ubuntu-latest', 'macos-13']
@@ -80,6 +85,7 @@ jobs:
       build_configuration: ${{ matrix.build_configuration }}
       
   macos-arm64-dotnet:
+    name: MacOS .NET arm64
     strategy:
       matrix:
         image: ['macos-14']

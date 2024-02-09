@@ -30,11 +30,11 @@ jobs:
           "channel=$channel" | Out-File -FilePath $env:GITHUB_ENV -Append;
         shell: pwsh
       - run: |
-          if (${{inputs.architecture == 'x86'}} -eq 'true') {
+          if ('${{inputs.architecture == 'x86'}}' -eq 'true') {
             $progfiles = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::ProgramFilesX86);
             "progfiles=$progfiles" | Out-File -FilePath $env:GITHUB_ENV -Append;
           }
-          if (${{inputs.architecture == 'x64'}} -eq 'true') {
+          if ('${{inputs.architecture == 'x64'}}' -eq 'true') {
             $progfiles = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::ProgramFiles);
             "progfiles=$progfiles" | Out-File -FilePath $env:GITHUB_ENV -Append;
           }

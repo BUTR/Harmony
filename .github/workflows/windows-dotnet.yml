@@ -3,9 +3,6 @@ name: Unix .NET
 on:
   workflow_call:
     inputs:
-      image:
-        required: true
-        type: string
       architecture:
         required: true
         type: string
@@ -18,8 +15,8 @@ on:
 
 jobs:
   unix-net:
-    name: .NET ${{ inputs.image }}-${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
-    runs-on: ${{inputs.image}}
+    name: .NET windows-${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
+    runs-on: windows-latest
     env:
       run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{inputs.architecture}}'
     steps:
@@ -46,37 +43,19 @@ jobs:
           #  $dotnetroot = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::ProgramFiles);
           #  "dotnetroot=$dotnetroot" | Out-File -FilePath $env:GITHUB_ENV -Append;
           #}
-          if ('${{ startsWith(inputs.image, 'ubuntu-') || startsWith(inputs.image, 'macos-') }}' -eq 'true') {
-            $dotnetroot = '${Env:HOME}/.dotnet';
-            "dotnetroot=$dotnetroot" | Out-File -FilePath $env:GITHUB_ENV -Append;
-          }
         shell: pwsh
 
       - name: Setup .NET Latest STS/LTS ${{inputs.architecture}}
         run: |
-          if ('${{ startsWith(inputs.image, 'windows-')}}' -eq 'true') {
-            Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
-            .\dotnet-install.ps1 -Channel LTS -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.dotnetroot}}" -NoPath;
-            .\dotnet-install.ps1 -Channel STS -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.dotnetroot}}" -NoPath;
-          }
-          if ('${{ !startsWith(inputs.image, 'windows-')}}' -eq 'true') {
-            Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.sh' -OutFile dotnet-install.sh;
-            bash dotnet-install.sh --channel LTS --architecture ${{inputs.architecture}} -r-untime dotnet --install-dir "${{env.dotnetroot}}" --no-path;
-            bash dotnet-install.sh --channel STS --architecture ${{inputs.architecture}} --runtime dotnet --install-dir "${{env.dotnetroot}}" --no-path;
-          }
-
+          Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
+          .\dotnet-install.ps1 -Channel LTS -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.dotnetroot}}" -NoPath;
+          .\dotnet-install.ps1 -Channel STS -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.dotnetroot}}" -NoPath;
         shell: pwsh
 
       - name: Setup .NET ${{env.channel}} ${{inputs.architecture}}
         run: |
-          if ('${{ startsWith(inputs.image, 'windows-')}}' -eq 'true') {
-            Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
-            .\dotnet-install.ps1 -Channel ${{env.channel}} -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.dotnetroot}}" -NoPath;
-          }
-          if ('${{ !startsWith(inputs.image, 'windows-')}}' -eq 'true') {
-            Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.sh' -OutFile dotnet-install.sh;
-            bash dotnet-install.sh --channel ${{env.channel}} --architecture ${{inputs.architecture}} --runtime dotnet --install-dir "${{env.dotnetroot}}" --no-path;
-          }
+          Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
+          .\dotnet-install.ps1 -Channel ${{env.channel}} -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.dotnetroot}}" -NoPath;
         shell: pwsh
 
       - name: Build

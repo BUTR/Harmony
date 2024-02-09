@@ -37,8 +37,6 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{env.channel}}
-        env:
-          PROCESSOR_ARCHITECTURE: ${{inputs.architecture}}
           
       - name: Setup .NET ${{env.channel}} ${{inputs.architecture}}
         uses: actions/setup-dotnet@v3

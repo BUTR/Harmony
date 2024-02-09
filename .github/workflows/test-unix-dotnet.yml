@@ -52,22 +52,19 @@ jobs:
         with:
           dotnet-version: ${{env.channel}}
 
-      #- name: Build
-      #  run: |
-      #    dotnet build -c ${{inputs.build_configuration}} -f ${{inputs.target_framework}} Harmony.sln
-
-      - name: Download Build Output
+      - name: Download Build Cache
         uses: actions/download-artifact@v4
         with:
           name: build-output-${{inputs.os}}-${{inputs.build_configuration}}
           path: ./
 
       - name: Test .NET
-        run: dotnet test "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" -f ${{inputs.target_framework}} -l trx -l "console;verbosity=normal" --results-directory "./tests" --blame -- ${{inputs.run_settings_args}}
+        run: |
+          dotnet test "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" -f ${{inputs.target_framework}} -l trx -l "console;verbosity=normal" --blame -- ${{inputs.run_settings_args}}
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
         if: ${{inputs.upload_tests && (success() || failure())}}
         with:
           name: test-results-net-${{inputs.os}}-${{inputs.architecture}}-${{inputs.target_framework}}-${{inputs.build_configuration}}
-          path: './tests/**/*.trx'
+          path: '**/*.trx'

@@ -24,8 +24,8 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
-  build-binaries:
-    name: Build Binaries
+  build-output-cache:
+    name: Upload Test Build Output Cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,14 +37,11 @@ jobs:
         run: |
           dotnet build -c ${{inputs.build_configuration}} Harmony.sln
 
-      - name: Upload Build Output
+      - name: Upload Test Build Output Cache
         uses: actions/upload-artifact@v4
         with:
           name: build-output-${{inputs.os}}-${{inputs.build_configuration}}
-          path: |
-            ./*/bin/**/*
-            !**/*.zip
-            !**/*.nupkg
+          path: ./HarmonyTests/bin/**/*
           
       - name: Upload Harmony zip
         if: ${{inputs.publish}}

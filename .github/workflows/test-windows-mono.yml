@@ -49,8 +49,17 @@ jobs:
             "programfiles=$programfiles" | Out-File -FilePath $env:GITHUB_ENV -Append;
           }
     
-      - name: Setup Mono x86
-        if: inputs.architecture == 'x86'
+      - name: Setup Mono
+        run: |
+          if ('${{ inputs.architecture == 'x86'}}' -eq 'true') {
+            choco install mono --x86;
+          }
+          if ('${{ inputs.architecture == 'x64'}}' -eq 'true') {
+            choco install mono;
+          }
+
+      - name: Setup Mono x86 Manually
+        if: false && inputs.architecture == 'x86'
         run: |
           curl -L https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0-gtksharp-2.12.45-win32-0.msi -o mono.msi;
           $file = "mono.msi" 
@@ -60,8 +69,8 @@ jobs:
           $procMain.WaitForExit()
           $procLog.Kill()
 
-      - name: Setup Mono x64
-        if: inputs.architecture == 'x64'
+      - name: Setup Mono x64 Manually
+        if: false && inputs.architecture == 'x64'
         run: |
           curl -L https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0.199-x64-0.msi -o mono.msi;
           $file = "mono.msi" 
@@ -71,11 +80,7 @@ jobs:
           $procMain.WaitForExit()
           $procLog.Kill()
 
-      #- name: Build
-      #  run: |
-      #    dotnet build -c ${{inputs.build_configuration}} -f ${{inputs.target_framework}} Harmony.sln
-
-      - name: Download Build Output
+      - name: Download Build Cache
         uses: actions/download-artifact@v4
         with:
           name: build-output-windows-${{inputs.build_configuration}}
@@ -89,7 +94,7 @@ jobs:
           # Execute the tests via mono + vstest.console.
           mono="${{env.programfiles}}/Mono/bin/mono.exe"
           vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe"
-          "$mono" "$vstest" "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" --framework:${{inputs.target_framework}} --logger:trx --logger:"console;verbosity=normal" --resultsDirectory:"./tests" --blame -- ${{inputs.run_settings_args}}
+          "$mono" "$vstest" "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" --framework:${{inputs.target_framework}} --logger:trx --logger:"console;verbosity=normal" --blame -- ${{inputs.run_settings_args}}
         shell: bash
 
       - name: Upload Test Results
@@ -97,4 +102,4 @@ jobs:
         if: ${{inputs.upload_tests && (success() || failure())}}
         with:
           name: test-results-mono-windows-${{inputs.architecture}}-${{inputs.target_framework}}-${{inputs.build_configuration}}
-          path: './tests/**/*.trx'
+          path: '**/*.trx'

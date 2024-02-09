@@ -37,12 +37,8 @@ jobs:
 
       - name: Setup .NET Sdk
         uses: actions/setup-dotnet@v4
-     
-      #- name: Build
-      #  run: |
-      #    dotnet build -c ${{inputs.build_configuration}} -f ${{inputs.target_framework}} Harmony.sln
 
-      - name: Download Build Output
+      - name: Download Build Cache
         uses: actions/download-artifact@v4
         with:
           name: build-output-windows-${{inputs.build_configuration}}
@@ -51,7 +47,7 @@ jobs:
       - name: Test .NET Framework
         run: |
           vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe"
-          "$vstest" "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" --framework:${{inputs.target_framework}} --logger:trx --logger:"console;verbosity=normal" --resultsDirectory:"./tests" --blame -- ${{inputs.run_settings_args}}
+          "$vstest" "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" --framework:${{inputs.target_framework}} --logger:trx --logger:"console;verbosity=normal" --blame -- ${{inputs.run_settings_args}}
         shell: bash
 
       - name: Upload Test Results
@@ -59,4 +55,4 @@ jobs:
         if: ${{inputs.upload_tests && (success() || failure())}}
         with:
           name: test-results-fx-windows-${{inputs.architecture}}-${{inputs.target_framework}}-${{inputs.build_configuration}}
-          path: './tests/**/*.trx'
+          path: '**/*.trx'

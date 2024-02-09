@@ -22,15 +22,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set DotNetRoot env
+      - name: Set ProgramFiles env
         run: |
           if ('${{ inputs.architecture == 'x86'}}' -eq 'true') {
-            $dotnetroot = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::ProgramFilesX86);
-            "dotnetroot=$dotnetroot/dotnet" | Out-File -FilePath $env:GITHUB_ENV -Append;
+            $programfiles = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::ProgramFilesX86);
+            "programfiles=$programfiles" | Out-File -FilePath $env:GITHUB_ENV -Append;
           }
           if ('${{ inputs.architecture == 'x64'}}' -eq 'true') {
-            $dotnetroot = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::ProgramFiles);
-            "dotnetroot=$dotnetroot/dotnet" | Out-File -FilePath $env:GITHUB_ENV -Append;
+            $programfiles = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::ProgramFiles);
+            "programfiles=$programfiles" | Out-File -FilePath $env:GITHUB_ENV -Append;
           }
         shell: pwsh
 
@@ -59,7 +59,7 @@ jobs:
           set -x
           
           # Execute the tests via mono + vstest.console.
-          mono="$${env.$progfiles}}/Mono/bin/mono.exe"
+          mono="$${env.programfiles}}/Mono/bin/mono.exe"
           vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe"
           "$mono" "$vstest" "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" --Framework:${{inputs.target_framework}} --logger:trx --ResultsDirectory:"${{ github.workspace }}/TestResults" --blame -- ${{env.run_settings_args}}
         shell: bash

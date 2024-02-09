@@ -36,7 +36,7 @@ jobs:
           }
           if ('${{ inputs.architecture == 'x64'}}' -eq 'true') {
             programfiles = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::ProgramFiles);
-            "dotnetroot=$programfiles" | Out-File -FilePath $env:GITHUB_ENV -Append;
+            "programfiles=$programfiles" | Out-File -FilePath $env:GITHUB_ENV -Append;
           }
         shell: pwsh
 

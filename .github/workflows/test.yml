@@ -166,8 +166,10 @@ jobs:
     runs-on: ubuntu-latest
     if: always()
     steps:
-      - uses: geekyeggo/delete-artifact@v4
+      - uses: joutvhu/delete-artifact@v2
         with:
-          name: |
-            build-output-*
-            test-results-*
+          pattern: build-output-*
+      - uses: joutvhu/delete-artifact@v2
+        with:
+          pattern: test-results-*
+            

@@ -54,15 +54,29 @@ jobs:
 
       - name: Setup .NET Latest STS/LTS ${{inputs.architecture}}
         run: |
-          Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
-          .\dotnet-install.ps1 -Channel LTS -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.dotnetroot}}" -NoPath;
-          .\dotnet-install.ps1 -Channel STS -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.dotnetroot}}" -NoPath;
+          if ('${{ startsWith(inputs.image, 'windows-')}}' -eq 'true') {
+            Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
+            .\dotnet-install.ps1 -Channel LTS -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.dotnetroot}}" -NoPath;
+            .\dotnet-install.ps1 -Channel STS -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.dotnetroot}}" -NoPath;
+          }
+          if ('${{ !startsWith(inputs.image, 'windows-')}}' -eq 'true') {
+            Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.sh' -OutFile dotnet-install.sh;
+            .\dotnet-install.sh --channel LTS --architecture ${{inputs.architecture}} -r-untime dotnet --install-dir "${{env.dotnetroot}}" --no-path;
+            .\dotnet-install.sh --channel STS --architecture ${{inputs.architecture}} --runtime dotnet --install-dir "${{env.dotnetroot}}" --no-path;
+          }
+
         shell: pwsh
 
       - name: Setup .NET ${{env.channel}} ${{inputs.architecture}}
         run: |
-          Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
-          .\dotnet-install.ps1 -Channel ${{env.channel}} -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.dotnetroot}}" -NoPath
+          if ('${{ startsWith(inputs.image, 'windows-')}}' -eq 'true') {
+            Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
+            .\dotnet-install.ps1 -Channel ${{env.channel}} -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.dotnetroot}}" -NoPath;
+          }
+          if ('${{ !startsWith(inputs.image, 'windows-')}}' -eq 'true') {
+            Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.sh' -OutFile dotnet-install.sh;
+            .\dotnet-install.sh --channel ${{env.channel}} --architecture ${{inputs.architecture}} --runtime dotnet --install-dir "${{env.dotnetroot}}" --no-path;
+          }
         shell: pwsh
 
       - name: Build

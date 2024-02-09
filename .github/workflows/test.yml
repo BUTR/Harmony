@@ -23,7 +23,7 @@ jobs:
     strategy:
       matrix:
         build_configuration: [ 'ReleaseFat', 'ReleaseThin' ]
-    uses: ./.github/workflows/test-windows-dotnet.yml
+    uses: ./.github/workflows/test-build.yml
     with:
       build_configuration: ${{ matrix.build_configuration }}
 

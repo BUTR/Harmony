@@ -2,9 +2,10 @@ name: Template Testing Build
 
 on:
   workflow_call:
-    build_configuration:
-      required: true
-      type: string
+    inputs:
+      build_configuration:
+        required: true
+        type: string
 jobs:
   build-binaries:
     name: Build Binaries

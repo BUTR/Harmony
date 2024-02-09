@@ -60,7 +60,7 @@ jobs:
     name: Ubuntu/MacOS .NET x64
     strategy:
       matrix:
-        image: [ { code: 'ubuntu-latest', name: 'ubuntu' }, code: 'macos-13', name: 'macos' }]
+        image: [ { code: 'ubuntu-latest', name: 'ubuntu' }, { code: 'macos-13', name: 'macos' }]
         architecture: ['x64']
         target_framework: ['netcoreapp3.0', 'netcoreapp3.1', 'net5.0', 'net6.0', 'net7.0', 'net8.0']
         build_configuration: ['ReleaseFat', 'ReleaseThin']
@@ -76,7 +76,7 @@ jobs:
     name: Ubuntu/MacOS Mono x64
     strategy:
       matrix:
-        image: [ { code: 'ubuntu-latest', name: 'ubuntu' }, code: 'macos-13', name: 'macos' }]
+        image: [ { code: 'ubuntu-latest', name: 'ubuntu' }, { code: 'macos-13', name: 'macos' }]
         architecture: ['x64']
         target_framework: ['net35', 'net452', 'net472', 'net48']
         build_configuration: ['ReleaseFat', 'ReleaseThin']

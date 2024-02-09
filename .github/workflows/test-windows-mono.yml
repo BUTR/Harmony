@@ -85,4 +85,4 @@ jobs:
         if: success() || failure()
         with:
           name: test-results-${{inputs.os}}-${{inputs.architecture}}-${{inputs.target_framework}}-${{inputs.build_configuration}}
-          path: 'HarmonyTests/TestResults/*.trx'
+          path: '**/*.trx'

@@ -28,14 +28,14 @@ env:
 jobs:
   ubuntu-mono-arm64:
     name: Mono ubuntu-arm64 ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
-    runs-on: ${{inputs.image}}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - name: Download Build Cache
         uses: actions/download-artifact@v4
         with:
-          name: build-output-${{inputs.os}}-${{inputs.build_configuration}}
+          name: build-output-ubuntu-${{inputs.build_configuration}}
           path: HarmonyTests/bin/
 
       - uses: uraimo/run-on-arch-action@v2.7.1

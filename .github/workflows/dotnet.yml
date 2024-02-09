@@ -41,7 +41,6 @@ jobs:
         shell: pwsh
 
       - name: Setup .NET
-        if: ${{ !startsWith(inputs.image, 'windows') || inputs.architecture != 'x86' }}
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{env.channel}}

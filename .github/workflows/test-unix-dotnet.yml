@@ -21,6 +21,10 @@ on:
       run_settings_args:
         required: true
         type: string
+      upload_tests:
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   unix-net:
@@ -52,11 +56,11 @@ jobs:
 
       - name: Test .NET
         run: |
-          dotnet test Harmony.sln --no-build -c ${{inputs.build_configuration}} -f ${{inputs.target_framework}} -l trx -l "console;verbosity=normal" --blame -- ${{inputs.run_settings_args}}
+          dotnet test Harmony.sln --no-build -c ${{inputs.build_configuration}} -f ${{inputs.target_framework}} -l trx -l console;verbosity=normal --results-directory ./tests --blame -- ${{inputs.run_settings_args}}
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
-        if: success() || failure()
+        if: ${{inputs.upload_tests && (success() || failure())}}
         with:
           name: test-results-net-${{inputs.os}}-${{inputs.architecture}}-${{inputs.target_framework}}-${{inputs.build_configuration}}
-          path: '**/*.trx'
+          path: './tests/**/*.trx'

@@ -15,6 +15,10 @@ on:
       run_settings_args:
         required: true
         type: string
+      upload_tests:
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   windows-mono:
@@ -77,12 +81,12 @@ jobs:
           # Execute the tests via mono + vstest.console.
           mono="${{env.programfiles}}/Mono/bin/mono.exe"
           vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe"
-          "$mono" "$vstest" "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" --framework:${{inputs.target_framework}} --logger:trx --logger:"console;verbosity=normal" --blame -- ${{inputs.run_settings_args}}
+          "$mono" "$vstest" "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" --framework:${{inputs.target_framework}} --logger:trx --logger:console;verbosity=normal --results-directory:./tests --blame -- ${{inputs.run_settings_args}}
         shell: bash
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
-        if: success() || failure()
+        if: ${{inputs.upload_tests && (success() || failure())}}
         with:
           name: test-results-mono-windows-${{inputs.architecture}}-${{inputs.target_framework}}-${{inputs.build_configuration}}
-          path: '**/*.trx'
+          path: './tests/**/*.trx'

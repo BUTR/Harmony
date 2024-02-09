@@ -111,14 +111,14 @@ jobs:
     needs: build-binaries
     strategy:
       matrix:
-        image: [ { code: 'macos-14', name: 'macos' }]
+        image: [ { code: 'macos-14', os: 'macos' }]
         architecture: ['arm64']
         target_framework: ['net6.0', 'net7.0', 'net8.0']
         build_configuration: ['ReleaseFat', 'ReleaseThin']
     uses: ./.github/workflows/test-unix-dotnet.yml
     with:
+      os: ${{ matrix.image.os }}
       image: ${{ matrix.image.code }}
-      image-name: ${{ matrix.image.name }}
       architecture: ${{ matrix.architecture }}
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}

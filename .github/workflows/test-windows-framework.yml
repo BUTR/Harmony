@@ -42,7 +42,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-output-windows-${{inputs.build_configuration}}
-          path: ./
+          path: HarmonyTests/bin/
 
       - name: Test .NET Framework
         run: |

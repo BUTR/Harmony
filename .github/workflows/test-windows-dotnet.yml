@@ -66,7 +66,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-output-windows-${{inputs.build_configuration}}
-          path: ./
+          path: HarmonyTests/bin/
 
       - name: Test .NET
         run: dotnet test "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" -f ${{inputs.target_framework}} -l trx -l "console;verbosity=normal" --blame -- ${{inputs.run_settings_args}}

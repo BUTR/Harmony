@@ -14,7 +14,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           pattern: test-results-*
-          path: ./test-results
+          path: test-results
 
       #- name: Test Report Upload
       #  uses: dorny/test-reporter@v1

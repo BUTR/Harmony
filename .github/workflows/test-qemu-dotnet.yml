@@ -60,14 +60,11 @@ jobs:
             apt-get update
             apt-get install -y wget
            
-            declare repo_version=$(if command -v lsb_release &> /dev/null; then lsb_release -r -s; else grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '"'; fi)
-            wget https://packages.microsoft.com/config/ubuntu/$repo_version/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-            dpkg -i packages-microsoft-prod.deb
-            rm packages-microsoft-prod.deb
-            
-            apt-get update
-            apt-get install -y dotnet-sdk-8.0
-            apt-get install -y dotnet-sdk-${{env.channel}}
+            wget https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.sh;
+            chmod +x dotnet-install.sh;
+            ./dotnet-install.sh --channel STS;
+            ./dotnet-install.sh --channel LTS;
+            ./dotnet-install.sh --channel ${{env.channel}};
           
           run: |
             dotnet test "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" -f ${{inputs.target_framework}} -l trx -l "console;verbosity=normal" --blame -- ${{inputs.run_settings_args}};

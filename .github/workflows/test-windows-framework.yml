@@ -42,10 +42,9 @@ jobs:
           "$vstest" "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" --Framework:${{inputs.target_framework}} --logger:trx --blame -- ${{inputs.run_settings_args}}
         shell: bash
 
-      - name: Test Report
-        uses: dorny/test-reporter@v1
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
-          name: .NET Tests
-          path: '**/*.trx'
-          reporter: dotnet-trx
+          name: test-results-${{inputs.os}}-${{inputs.architecture}}-${{inputs.target_framework}}-${{inputs.build_configuration}}
+          path: 'HarmonyTests/TestResults/*.trx'

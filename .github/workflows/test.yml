@@ -154,9 +154,15 @@ jobs:
       build_configuration: ${{ matrix.build_configuration }}
       run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'
 
+  test-results:
+    name: Download and Upload Test Results
+    needs: [windows-dotnet, windows-framework, windows-mono, ubuntu-macos-x64-dotnet, ubuntu-macos-x64-mono, macos-arm64-dotnet]
+    if: always()
+    uses: ./.github/workflows/test-result-upload.yml
+
   cleanup-build-output:
     name: Cleanup Build Output
-    needs: [windows-dotnet, windows-framework, windows-mono, ubuntu-macos-x64-dotnet, ubuntu-macos-x64-mono, macos-arm64-dotnet]
+    needs: [test-results]
     runs-on: ubuntu-latest
     if: always()
     steps:
@@ -164,3 +170,4 @@ jobs:
         with:
           name: |
             build-output-*
+            test-results-*

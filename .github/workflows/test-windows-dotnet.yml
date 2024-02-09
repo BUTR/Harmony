@@ -1,4 +1,4 @@
-name: Template Windows .NET
+name: Template Testing Windows .NET
 
 on:
   workflow_call:
@@ -53,9 +53,15 @@ jobs:
           .\dotnet-install.ps1 -Channel ${{env.channel}} -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.programfiles}}/dotnet" -NoPath;
         shell: pwsh
 
-      - name: Build
-        run: |
-          dotnet build -c ${{inputs.build_configuration}} -f ${{inputs.target_framework}} Harmony.sln
+      #- name: Build
+      #  run: |
+      #    dotnet build -c ${{inputs.build_configuration}} -f ${{inputs.target_framework}} Harmony.sln
+
+      - name: Download Build Output
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output-${{inputs.build_configuration}}
+          path: ./
 
       - name: Test .NET
         run: |

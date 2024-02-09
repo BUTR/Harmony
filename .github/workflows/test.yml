@@ -17,14 +17,25 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
+  
+  build-binaries:
+    name: Build Binaries
+    strategy:
+      matrix:
+        build_configuration: [ 'ReleaseFat', 'ReleaseThin' ]
+    uses: ./.github/workflows/test-windows-dotnet.yml
+    with:
+      build_configuration: ${{ matrix.build_configuration }}
+
   windows-dotnet:
     name: Windows .NET x86/x64
+    needs: build-binaries
     strategy:
       matrix:
         architecture: ['x86', 'x64']
         target_framework: ['netcoreapp3.0', 'netcoreapp3.1', 'net5.0', 'net6.0', 'net7.0', 'net8.0']
         build_configuration: ['ReleaseFat', 'ReleaseThin']
-    uses: ./.github/workflows/windows-dotnet.yml
+    uses: ./.github/workflows/test-windows-dotnet.yml
     with:
       architecture: ${{ matrix.architecture }}
       target_framework: ${{ matrix.target_framework }}
@@ -32,12 +43,13 @@ jobs:
 
   windows-framework:
     name: Windows .NET Framework x86/x64
+    needs: build-binaries
     strategy:
       matrix:
         architecture: ['x86', 'x64']
         target_framework: ['net35', 'net452', 'net472', 'net48']
         build_configuration: ['ReleaseFat', 'ReleaseThin']
-    uses: ./.github/workflows/windows-framework.yml
+    uses: ./.github/workflows/test-windows-framework.yml
     with:
       architecture: ${{ matrix.architecture }}
       target_framework: ${{ matrix.target_framework }}
@@ -45,12 +57,13 @@ jobs:
 
   windows-mono:
     name: Windows Mono x86/x64
+    needs: build-binaries
     strategy:
       matrix:
         architecture: ['x86', 'x64']
         target_framework: ['net35', 'net452', 'net472', 'net48']
         build_configuration: ['ReleaseFat', 'ReleaseThin']
-    uses: ./.github/workflows/windows-mono.yml
+    uses: ./.github/workflows/test-windows-mono.yml
     with:
       architecture: ${{ matrix.architecture }}
       target_framework: ${{ matrix.target_framework }}
@@ -58,13 +71,14 @@ jobs:
 
   ubuntu-macos-x64-dotnet:
     name: Ubuntu/MacOS .NET x64
+    needs: build-binaries
     strategy:
       matrix:
         image: [ { code: 'ubuntu-latest', name: 'ubuntu' }, { code: 'macos-13', name: 'macos' }]
         architecture: ['x64']
         target_framework: ['netcoreapp3.0', 'netcoreapp3.1', 'net5.0', 'net6.0', 'net7.0', 'net8.0']
         build_configuration: ['ReleaseFat', 'ReleaseThin']
-    uses: ./.github/workflows/unix-dotnet.yml
+    uses: ./.github/workflows/test-unix-dotnet.yml
     with:
       image: ${{ matrix.image.code }}
       image-name: ${{ matrix.image.name }}
@@ -74,13 +88,14 @@ jobs:
 
   ubuntu-macos-x64-mono:
     name: Ubuntu/MacOS Mono x64
+    needs: build-binaries
     strategy:
       matrix:
         image: [ { code: 'ubuntu-latest', name: 'ubuntu' }, { code: 'macos-13', name: 'macos' }]
         architecture: ['x64']
         target_framework: ['net35', 'net452', 'net472', 'net48']
         build_configuration: ['ReleaseFat', 'ReleaseThin']
-    uses: ./.github/workflows/unix-mono.yml
+    uses: ./.github/workflows/test-unix-mono.yml
     with:
       image: ${{ matrix.image.code }}
       image-name: ${{ matrix.image.name }}
@@ -90,14 +105,15 @@ jobs:
       
   macos-arm64-dotnet:
     name: MacOS .NET arm64
+    if: false
+    needs: build-binaries
     strategy:
       matrix:
         image: [ { code: 'macos-14', name: 'macos' }]
         architecture: ['arm64']
         target_framework: ['net6.0', 'net7.0', 'net8.0']
         build_configuration: ['ReleaseFat', 'ReleaseThin']
-    uses: ./.github/workflows/unix-dotnet.yml
-    if: false
+    uses: ./.github/workflows/test-unix-dotnet.yml
     with:
       image: ${{ matrix.image.code }}
       image-name: ${{ matrix.image.name }}

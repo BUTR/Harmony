@@ -1,4 +1,4 @@
-name: Template Windows Mono
+name: Template Testing Windows Mono
 
 on:
   workflow_call:
@@ -49,9 +49,15 @@ jobs:
           curl -L https://download.mono-project.com/archive/6.12.0/windows-installer/mono-6.12.0.199-x64-0.msi -o mono.msi
           msiexec /i mono.msi /quiet
 
-      - name: Build
-        run: |
-          dotnet build -c ${{inputs.build_configuration}} -f ${{inputs.target_framework}} Harmony.sln
+      #- name: Build
+      #  run: |
+      #    dotnet build -c ${{inputs.build_configuration}} -f ${{inputs.target_framework}} Harmony.sln
+
+      - name: Download Build Output
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output-${{inputs.build_configuration}}
+          path: ./
 
       - name: Test Mono
         run: |

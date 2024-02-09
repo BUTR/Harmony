@@ -1,4 +1,4 @@
-name: Template Unix Mono
+name: Template Testing Unix .NET
 
 on:
   workflow_call:
@@ -20,20 +20,34 @@ on:
         type: string
 
 jobs:
-  unix-mono:
-    name: Mono ${{ inputs.image-name }}-${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
+  unix-net:
+    name: .NET ${{ inputs.image-name }}-${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
     runs-on: ${{inputs.image}}
     env:
       run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{inputs.architecture}}'
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup .NET Sdk
-        uses: actions/setup-dotnet@v3
-
-      - name: Build
+      - name: Set Channel env
         run: |
-          dotnet build -c ${{inputs.build_configuration}} -f ${{inputs.target_framework}} Harmony.sln
+          $channel = '${{inputs.target_framework}}'.Replace('coreapp', '').Replace('net', '');
+          "channel=$channel" | Out-File -FilePath $env:GITHUB_ENV -Append;
+        shell: pwsh
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{env.channel}}
+
+      #- name: Build
+      #  run: |
+      #    dotnet build -c ${{inputs.build_configuration}} -f ${{inputs.target_framework}} Harmony.sln
+
+      - name: Download Build Output
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output-${{inputs.build_configuration}}
+          path: ./
 
       - name: Test .NET
         run: |

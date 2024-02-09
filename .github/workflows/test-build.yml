@@ -1,0 +1,32 @@
+name: Template Testing Build
+
+on:
+  workflow_call:
+    build_configuration:
+      required: true
+      type: string
+jobs:
+  build-binaries:
+    name: Build Binaries
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set Channel env
+        run: |
+          $channel = '${{inputs.target_framework}}'.Replace('coreapp', '').Replace('net', '');
+          "channel=$channel" | Out-File -FilePath $env:GITHUB_ENV -Append;
+        shell: pwsh
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+
+      - name: Build
+        run: |
+          dotnet build -c ${{inputs.build_configuration}} Harmony.sln
+
+      - name: Upload Build Output
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output-${{inputs.build_configuration}}
+          path: ./*/bin/${{inputs.build_configuration}}/**/*

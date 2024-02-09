@@ -1,4 +1,4 @@
-name: Template Windows .NET Framework
+name: Template Testing Windows .NET Framework
 
 on:
   workflow_call:
@@ -25,9 +25,15 @@ jobs:
       - name: Setup .NET Sdk
         uses: actions/setup-dotnet@v3
      
-      - name: Build
-        run: |
-          dotnet build -c ${{inputs.build_configuration}} -f ${{inputs.target_framework}} Harmony.sln
+      #- name: Build
+      #  run: |
+      #    dotnet build -c ${{inputs.build_configuration}} -f ${{inputs.target_framework}} Harmony.sln
+
+      - name: Download Build Output
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output-${{inputs.build_configuration}}
+          path: ./
 
       - name: Test .NET Framework
         run: |

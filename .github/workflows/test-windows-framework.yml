@@ -12,13 +12,14 @@ on:
       build_configuration:
         required: true
         type: string
+      run_settings_args:
+        required: true
+        type: string
 
 jobs:
   windows-net-framework:
     name: .NET FX ${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
     runs-on: windows-2019
-    env:
-      run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{inputs.architecture}}'
     steps:
       - uses: actions/checkout@v4
 
@@ -38,7 +39,7 @@ jobs:
       - name: Test .NET Framework
         run: |
           vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe"
-          "$vstest" "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" --Framework:${{inputs.target_framework}} --logger:trx --ResultsDirectory:"${{ github.workspace }}/TestResults" --blame -- ${{env.run_settings_args}}
+          "$vstest" "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" --Framework:${{inputs.target_framework}} --logger:trx --ResultsDirectory:"${{ github.workspace }}/TestResults" --blame -- ${{inputs.run_settings_args}}
         shell: bash
 
       - name: Parse Trx files

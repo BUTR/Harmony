@@ -12,13 +12,14 @@ on:
       build_configuration:
         required: true
         type: string
+      run_settings_args:
+        required: true
+        type: string
 
 jobs:
   unix-net:
     name: .NET ${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
     runs-on: windows-latest
-    env:
-      run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{inputs.architecture}}'
     steps:
       - uses: actions/checkout@v4
 
@@ -26,7 +27,6 @@ jobs:
         run: |
           $channel = '${{inputs.target_framework}}'.Replace('coreapp', '').Replace('net', '');
           "channel=$channel" | Out-File -FilePath $env:GITHUB_ENV -Append;
-        shell: pwsh
         
       - name: Set ProgramFiles env
         run: |
@@ -38,20 +38,17 @@ jobs:
             $programfiles = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::ProgramFiles);
             "programfiles=$programfiles" | Out-File -FilePath $env:GITHUB_ENV -Append;
           }
-        shell: pwsh
 
       - name: Setup .NET Latest STS/LTS ${{inputs.architecture}}
         run: |
           Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
           .\dotnet-install.ps1 -Channel LTS -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.programfiles}}/dotnet" -NoPath;
           .\dotnet-install.ps1 -Channel STS -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.programfiles}}/dotnet" -NoPath;
-        shell: pwsh
 
       - name: Setup .NET ${{env.channel}} ${{inputs.architecture}}
         run: |
           Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
           .\dotnet-install.ps1 -Channel ${{env.channel}} -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{env.programfiles}}/dotnet" -NoPath;
-        shell: pwsh
 
       #- name: Build
       #  run: |
@@ -65,7 +62,7 @@ jobs:
 
       - name: Test .NET
         run: |
-          dotnet test Harmony.sln --no-build -c ${{inputs.build_configuration}} -f ${{inputs.target_framework}} --logger trx --results-directory ./TestResults --blame -- ${{env.run_settings_args}}
+          dotnet test Harmony.sln --no-build -c ${{inputs.build_configuration}} -f ${{inputs.target_framework}} --logger trx --results-directory ./TestResults --blame -- ${{inputs.run_settings_args}}
 
       - name: Parse Trx files
         uses: NasAmin/trx-parser@v0.5.0

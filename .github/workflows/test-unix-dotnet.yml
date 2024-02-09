@@ -18,13 +18,14 @@ on:
       build_configuration:
         required: true
         type: string
+      run_settings_args:
+        required: true
+        type: string
 
 jobs:
   unix-net:
     name: .NET ${{ inputs.os }}-${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
     runs-on: ${{inputs.image}}
-    env:
-      run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{inputs.architecture}}'
     steps:
       - uses: actions/checkout@v4
 
@@ -51,7 +52,7 @@ jobs:
 
       - name: Test .NET
         run: |
-          dotnet test Harmony.sln --no-build -c ${{inputs.build_configuration}} -f ${{inputs.target_framework}} --logger trx --results-directory ./TestResults --blame -- ${{env.run_settings_args}}
+          dotnet test Harmony.sln --no-build -c ${{inputs.build_configuration}} -f ${{inputs.target_framework}} --logger trx --results-directory ./TestResults --blame -- ${{inputs.run_settings_args}}
 
       - name: Parse Trx files
         uses: NasAmin/trx-parser@v0.5.0

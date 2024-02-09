@@ -15,6 +15,12 @@ env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   # Disable sending .NET CLI telemetry to Microsoft.
   DOTNET_CLI_TELEMETRY_OPTOUT: true
+  
+  # You are interested in changing these values
+  BUILD_CONFIGURATIONS:                 "['ReleaseFat', 'ReleaseThin']"
+  DOTNET_TARGET_FRAMEWORKS:             "['netcoreapp3.0', 'netcoreapp3.1', 'net5.0', 'net6.0', 'net7.0', 'net8.0']"
+  DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64: "['net6.0', 'net7.0', 'net8.0']"
+  FRAMEWORK_TARGET_FRAMEWORKS:          "['net35', 'net452', 'net472', 'net48']"
 
 jobs:
   
@@ -23,7 +29,7 @@ jobs:
     strategy:
       matrix:
         os: [ 'windows', 'ubuntu', 'macos' ]
-        build_configuration: [ 'ReleaseFat', 'ReleaseThin' ]
+        build_configuration: fromJson(${{ env.BUILD_CONFIGURATIONS }})
     uses: ./.github/workflows/test-build.yml
     with:
       os: ${{ matrix.os }}
@@ -35,13 +41,14 @@ jobs:
     strategy:
       matrix:
         architecture: ['x86', 'x64']
-        target_framework: ['netcoreapp3.0', 'netcoreapp3.1', 'net5.0', 'net6.0', 'net7.0', 'net8.0']
-        build_configuration: ['ReleaseFat', 'ReleaseThin']
+        target_framework: fromJson(${{ env.DOTNET_TARGET_FRAMEWORKS }})
+        build_configuration: fromJson(${{ env.BUILD_CONFIGURATIONS }})
     uses: ./.github/workflows/test-windows-dotnet.yml
     with:
       architecture: ${{ matrix.architecture }}
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
+      run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'
 
   windows-framework:
     name: Windows .NET Framework x86/x64
@@ -49,13 +56,14 @@ jobs:
     strategy:
       matrix:
         architecture: ['x86', 'x64']
-        target_framework: ['net35', 'net452', 'net472', 'net48']
-        build_configuration: ['ReleaseFat', 'ReleaseThin']
+        target_framework: fromJson(${{ env.FRAMEWORK_TARGET_FRAMEWORKS }})
+        build_configuration: fromJson(${{ env.BUILD_CONFIGURATIONS }})
     uses: ./.github/workflows/test-windows-framework.yml
     with:
       architecture: ${{ matrix.architecture }}
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
+      run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'
 
   windows-mono:
     name: Windows Mono x86/x64
@@ -63,13 +71,14 @@ jobs:
     strategy:
       matrix:
         architecture: ['x86', 'x64']
-        target_framework: ['net35', 'net452', 'net472', 'net48']
-        build_configuration: ['ReleaseFat', 'ReleaseThin']
+        target_framework: fromJson(${{ env.FRAMEWORK_TARGET_FRAMEWORKS }})
+        build_configuration: fromJson(${{ env.BUILD_CONFIGURATIONS }})
     uses: ./.github/workflows/test-windows-mono.yml
     with:
       architecture: ${{ matrix.architecture }}
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
+      run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'
 
   ubuntu-macos-x64-dotnet:
     name: Ubuntu/MacOS .NET x64
@@ -78,8 +87,8 @@ jobs:
       matrix:
         image: [ { code: 'ubuntu-latest', os: 'ubuntu' }, { code: 'macos-13', os: 'macos' }]
         architecture: ['x64']
-        target_framework: ['netcoreapp3.0', 'netcoreapp3.1', 'net5.0', 'net6.0', 'net7.0', 'net8.0']
-        build_configuration: ['ReleaseFat', 'ReleaseThin']
+        target_framework: fromJson(${{ env.DOTNET_TARGET_FRAMEWORKS }})
+        build_configuration: fromJson(${{ env.BUILD_CONFIGURATIONS }})
     uses: ./.github/workflows/test-unix-dotnet.yml
     with:
       os: ${{ matrix.image.os }}
@@ -87,6 +96,7 @@ jobs:
       architecture: ${{ matrix.architecture }}
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
+      run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'
 
   ubuntu-macos-x64-mono:
     name: Ubuntu/MacOS Mono x64
@@ -95,8 +105,8 @@ jobs:
       matrix:
         image: [ { code: 'ubuntu-latest', os: 'ubuntu' }, { code: 'macos-13', os: 'macos' }]
         architecture: ['x64']
-        target_framework: ['net35', 'net452', 'net472', 'net48']
-        build_configuration: ['ReleaseFat', 'ReleaseThin']
+        target_framework: fromJson(${{ env.FRAMEWORK_TARGET_FRAMEWORKS }})
+        build_configuration: fromJson(${{ env.BUILD_CONFIGURATIONS }})
     uses: ./.github/workflows/test-unix-mono.yml
     with:
       os: ${{ matrix.image.os }}
@@ -104,6 +114,7 @@ jobs:
       architecture: ${{ matrix.architecture }}
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
+      run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'
       
   macos-arm64-dotnet:
     name: MacOS .NET arm64
@@ -113,8 +124,8 @@ jobs:
       matrix:
         image: [ { code: 'macos-14', os: 'macos' }]
         architecture: ['arm64']
-        target_framework: ['net6.0', 'net7.0', 'net8.0']
-        build_configuration: ['ReleaseFat', 'ReleaseThin']
+        target_framework: fromJson(${{ env.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64 }})
+        build_configuration: fromJson(${{ env.BUILD_CONFIGURATIONS }})
     uses: ./.github/workflows/test-unix-dotnet.yml
     with:
       os: ${{ matrix.image.os }}
@@ -122,3 +133,4 @@ jobs:
       architecture: ${{ matrix.architecture }}
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
+      run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'

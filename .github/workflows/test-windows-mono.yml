@@ -44,7 +44,7 @@ jobs:
       - name: Shared Test Setup
         uses: ./.github/actions/test-setup-shared
         with:
-          os: ${{inputs.os}}
+          os: windows
           build_configuration: ${{inputs.build_configuration}}
 
       - name: Setup Mono ${{inputs.architecture}}
@@ -73,7 +73,7 @@ jobs:
         uses: ./.github/actions/test-upload-result
         if: ${{inputs.upload_tests}}
         with:
-          os: ${{inputs.os}}
+          os: windows
           architecture: ${{inputs.architecture}}
           target_framework: ${{inputs.target_framework}}
           build_configuration: ${{inputs.build_configuration}}

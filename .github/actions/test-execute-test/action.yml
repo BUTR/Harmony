@@ -52,17 +52,17 @@ runs:
           if ('${{ inputs.runtime-type == 'mono'}}' -eq 'true') {
             & "${{steps.get-program-files.outputs.path}}/Mono/bin/mono.exe" "$vstest" $env:vstest;
         
-          } else if ('${{ inputs.runtime-type == 'fx'}}' -eq 'true') {
+          } elseif ('${{ inputs.runtime-type == 'fx'}}' -eq 'true') {
             & "$vstest" $env:vstest;
         
-          } else if ('${{ inputs.runtime-type == 'dotnet'}}' -eq 'true') {
+          } elseif ('${{ inputs.runtime-type == 'dotnet'}}' -eq 'true') {
             dotnet test $env:dotnet;
         
           } else {
             throw "Unknown runtime-type: ${{inputs.runtime-type}}";
           }
         
-        } else if ('${{inputs.os == 'ubuntu' || inputs.os == 'macos' || inputs.os == 'macos-arm64'}}' -eq 'true') {
+        } elseif ('${{inputs.os == 'ubuntu' || inputs.os == 'macos' || inputs.os == 'macos-arm64'}}' -eq 'true') {
             dotnet test $env:dotnet;
         
         } else {

@@ -39,27 +39,24 @@ jobs:
     continue-on-error: ${{inputs.experimental}}
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup .NET Sdk
-        uses: actions/setup-dotnet@v4
-
-      - name: Download Build Cache
-        uses: actions/download-artifact@v4
+      - name: Shared Test Setup
+        uses: ./.github/actions/test-setup-shared
         with:
-          name: build-output-windows-${{inputs.build_configuration}}
-          path: HarmonyTests/bin/
+          os: ${{inputs.os}}
+          build_configuration: ${{inputs.build_configuration}}
 
-      - name: Test .NET Framework
+      - name: Test .NET Framework ${{inputs.architecture}}
         run: |
           vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe";
           "$vstest" "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" --framework:${{inputs.target_framework}} --logger:trx --logger:"console;verbosity=normal" --blame -- ${{inputs.run_settings_args}};
         shell: bash
 
-      - name: Upload Test Results
-        uses: actions/upload-artifact@v4
-        if: ${{inputs.upload_tests && (success() || failure())}}
+      - name: Upload Test Result
+        uses: ./.github/actions/test-upload-result
+        if: ${{inputs.upload_tests}}
         with:
-          name: ${{(inputs.experimental && 'experimental-') || ''}}test-results-fx-windows-${{inputs.architecture}}-${{inputs.target_framework}}-${{inputs.build_configuration}}
-          path: '**/*.trx'
-          if-no-files-found: ${{(inputs.experimental && 'ignore') || 'warn'}}
+          os: ${{inputs.os}}
+          architecture: ${{inputs.architecture}}
+          target_framework: ${{inputs.target_framework}}
+          build_configuration: ${{inputs.build_configuration}}
+          experimental: ${{inputs.experimental}}

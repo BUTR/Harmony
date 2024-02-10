@@ -1,0 +1,23 @@
+name: Test Setup Shared
+description: Shared code for test setup
+
+inputs:
+  os:
+    description: 'The operating system to use'
+    required: true
+  build_configuration:
+    description: 'The build configuration to use'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET Sdk
+      uses: actions/setup-dotnet@v4
+
+    - name: Download Build Cache
+      uses: actions/download-artifact@v4
+      with:
+        name: build-output-${{inputs.os}}-${{inputs.build_configuration}}
+        path: HarmonyTests/bin/

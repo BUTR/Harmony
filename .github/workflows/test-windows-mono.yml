@@ -39,65 +39,40 @@ jobs:
     continue-on-error: ${{inputs.experimental}}
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup .NET Sdk
-        uses: actions/setup-dotnet@v4
-
-      - name: Set ProgramFiles env
-        run: |
-          if ('${{ inputs.architecture == 'x86'}}' -eq 'true') {
-            $programfiles = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::ProgramFilesX86);
-            "programfiles=$programfiles" | Out-File -FilePath $env:GITHUB_ENV -Append;
-          }
-          if ('${{ inputs.architecture == 'x64'}}' -eq 'true') {
-            $programfiles = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::ProgramFiles);
-            "programfiles=$programfiles" | Out-File -FilePath $env:GITHUB_ENV -Append;
-          }
-
-      - name: Setup Mono x86 Manually
-        if: inputs.architecture == 'x86'
-        run: |
-          curl -L https://download.mono-project.com/archive/mono-latest-x86-preview.msi -o mono.msi;
-          $file = "mono.msi" 
-          $log = "install.log"
-          $procMain = Start-Process "msiexec" "/i `"$file`" /qn /l*! `"$log`"" -NoNewWindow -PassThru
-          $procLog = Start-Process "powershell" "Get-Content -Path `"$log`" -Wait" -NoNewWindow -PassThru
-          $procMain.WaitForExit()
-          $procLog.Kill()
-
-      - name: Setup Mono x64 Manually
-        if: inputs.architecture == 'x64'
-        run: |
-          curl -L https://download.mono-project.com/archive/mono-latest-x64-preview.msi -o mono.msi;
-          $file = "mono.msi" 
-          $log = "install.log"
-          $procMain = Start-Process "msiexec" "/i `"$file`" /qn /l*! `"$log`"" -NoNewWindow -PassThru
-          $procLog = Start-Process "powershell" "Get-Content -Path `"$log`" -Wait" -NoNewWindow -PassThru
-          $procMain.WaitForExit()
-          $procLog.Kill()
-
-      - name: Download Build Cache
-        uses: actions/download-artifact@v4
+      - name: Shared Test Setup
+        uses: ./.github/actions/test-setup-shared
         with:
-          name: build-output-windows-${{inputs.build_configuration}}
-          path: HarmonyTests/bin/
+          os: ${{inputs.os}}
+          build_configuration: ${{inputs.build_configuration}}
 
-      - name: Test Mono
+      - name: Setup Mono ${{inputs.architecture}}
+        uses: ./.github/actions/test-setup-mono-windows
+        with:
+          architecture: ${{inputs.architecture}}
+
+      - name: Get Program Files path for ${{inputs.architecture}}
+        uses: ./.github/actions/get-program-files
+        id: get-program-files
+        with:
+          architecture: ${{inputs.architecture}}
+
+      - name: Test Mono ${{inputs.architecture}}
         run: |
           shopt -s failglob globstar
           set -x
           
           # Execute the tests via mono + vstest.console.
-          mono="${{env.programfiles}}/Mono/bin/mono.exe";
+          mono="${{steps.get-program-files.outputs.path}}/Mono/bin/mono.exe";
           vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe";
           "$mono" "$vstest" "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" --framework:${{inputs.target_framework}} --logger:trx --logger:"console;verbosity=normal" --blame -- ${{inputs.run_settings_args}};
         shell: bash
 
-      - name: Upload Test Results
-        uses: actions/upload-artifact@v4
-        if: ${{inputs.upload_tests && (success() || failure())}}
+      - name: Upload Test Result
+        uses: ./.github/actions/test-upload-result
+        if: ${{inputs.upload_tests}}
         with:
-          name: ${{(inputs.experimental && 'experimental-') || ''}}test-results-mono-windows-${{inputs.architecture}}-${{inputs.target_framework}}-${{inputs.build_configuration}}
-          path: '**/*.trx'
-          if-no-files-found: ${{(inputs.experimental && 'ignore') || 'warn'}}
+          os: ${{inputs.os}}
+          architecture: ${{inputs.architecture}}
+          target_framework: ${{inputs.target_framework}}
+          build_configuration: ${{inputs.build_configuration}}
+          experimental: ${{inputs.experimental}}

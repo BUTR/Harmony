@@ -43,6 +43,7 @@ jobs:
     name: Mono ${{ inputs.os }}-${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
     runs-on: ${{inputs.image}}
     continue-on-error: ${{inputs.continue_on_error}}
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
 

@@ -47,7 +47,7 @@ jobs:
           os: windows
           build_configuration: ${{inputs.build_configuration}}
 
-      - name: Get .NET Channel for ${{target_framework.architecture}}
+      - name: Get .NET Channel for ${{inputs.target_framework}}
         uses: ./.github/actions/get-dotnet-channel
         id: get_channel
         with:

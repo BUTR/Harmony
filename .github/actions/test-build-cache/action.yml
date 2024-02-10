@@ -8,6 +8,7 @@ inputs:
   build_configuration:
     description: 'The build configuration to use'
     required: true
+
 runs:
   using: "composite"
   steps:

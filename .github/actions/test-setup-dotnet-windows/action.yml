@@ -8,6 +8,7 @@ inputs:
   architecture:
     description: 'The .NET architecture'
     required: true
+
 runs:
   using: "composite"
   steps:

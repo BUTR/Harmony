@@ -5,10 +5,12 @@ inputs:
   target_framework:
     description: 'The target framework to use'
     required: true
+
 outputs:
   channel:
     description: 'The converted Channel variable'
     value: ${{ steps.set_channel.outputs.channel }}
+
 runs:
   using: "composite"
   steps:

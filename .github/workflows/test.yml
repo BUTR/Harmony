@@ -49,7 +49,7 @@ jobs:
       os: ${{ matrix.image.os }}
       image: ${{ matrix.image.code }}
       build_configuration: ${{ matrix.build_configuration }}
-      publish: ${{ matrix.os == 'windows' }}
+      publish: ${{ matrix.image.os == 'windows' }}
 
   windows-dotnet:
     name: Windows .NET x86/x64

@@ -2,6 +2,11 @@ name: Template Testing Result Upload
 
 on:
   workflow_call:
+    inputs:
+      experimental:
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   build-binaries:
@@ -20,4 +25,5 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
-          files: test-results/**/*.trx
+          check_name: Test Results ${{inputs.experimental && '(Experimental)'}}
+          files: ${{inputs.experimental && 'experimental-'}}test-results/**/*.trx

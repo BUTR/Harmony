@@ -16,7 +16,7 @@ on:
         required: false
         type: boolean
         default: true
-      continue_on_error:
+      experimental:
         required: false
         type: boolean
         default: false
@@ -33,7 +33,7 @@ jobs:
   ubuntu-mono-arm64:
     name: Mono ubuntu-arm64 ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
     runs-on: ubuntu-latest
-    continue-on-error: ${{inputs.continue_on_error}}
+    continue-on-error: ${{inputs.experimental}}
     timeout-minutes: 7
     steps:
       - uses: actions/checkout@v4
@@ -73,8 +73,7 @@ jobs:
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
-        #if: ${{inputs.upload_tests && (success() || failure())}}
-        if: ${{inputs.upload_tests && success()}}
+        if: ${{inputs.upload_tests && (success() || failure())}}
         with:
-          name: test-results-mono-ubuntu-arm64-${{inputs.target_framework}}-${{inputs.build_configuration}}
+          name: ${{inputs.experimental && 'experimental-'}}test-results-mono-ubuntu-arm64-${{inputs.target_framework}}-${{inputs.build_configuration}}
           path: '**/*.trx'

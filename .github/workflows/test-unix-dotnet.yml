@@ -25,7 +25,7 @@ on:
         required: false
         type: boolean
         default: true
-      continue_on_error:
+      experimental:
         required: false
         type: boolean
         default: false
@@ -42,7 +42,7 @@ jobs:
   unix-net:
     name: .NET ${{ inputs.os }}-${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
     runs-on: ${{inputs.image}}
-    continue-on-error: ${{inputs.continue_on_error}}
+    continue-on-error: ${{inputs.experimental}}
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
@@ -72,5 +72,5 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{inputs.upload_tests && (success() || failure())}}
         with:
-          name: test-results-net-${{inputs.os}}-${{inputs.architecture}}-${{inputs.target_framework}}-${{inputs.build_configuration}}
+          name: ${{inputs.experimental && 'experimental-'}}test-results-net-${{inputs.os}}-${{inputs.architecture}}-${{inputs.target_framework}}-${{inputs.build_configuration}}
           path: '**/*.trx'

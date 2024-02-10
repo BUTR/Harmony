@@ -146,7 +146,7 @@ jobs:
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
       run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'
-      continue_on_error: true
+      experimental: true
 
   ubuntu-arm64-mono:
     name: Ubuntu .NET arm64
@@ -161,7 +161,7 @@ jobs:
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
       run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'
-      continue_on_error: true
+      experimental: true
 
   macos-arm64-dotnet:
     name: MacOS .NET arm64
@@ -181,7 +181,7 @@ jobs:
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
       run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'
-      continue_on_error: true
+      experimental: true
 
   test-results:
     name: Download and Upload Test Results
@@ -189,9 +189,17 @@ jobs:
     if: always()
     uses: ./.github/workflows/test-result-upload.yml
 
+  test-results-experimental:
+    name: Download and Upload Test Results (Experimental)
+    needs: [windows-dotnet, windows-framework, windows-mono, ubuntu-macos-x64-dotnet, ubuntu-macos-x64-mono, ubuntu-arm64-dotnet, ubuntu-arm64-mono, macos-arm64-dotnet]
+    if: always()
+    uses: ./.github/workflows/test-result-upload.yml
+    with:
+      experimental: true
+
   cleanup-build-output:
     name: Cleanup Build Output
-    needs: [test-results]
+    needs: [test-results, test-results-experimental]
     runs-on: ubuntu-latest
     if: always()
     steps:

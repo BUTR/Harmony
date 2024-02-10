@@ -1,15 +1,15 @@
 name: Setup .NET Windows
-description: Setup .NET for Windows using the latest version
+description: Setup .NET for Windows using the provided channel and architecture
 
 inputs:
   channel:
-    description: 'The channel'
+    description: 'The .NET channel'
     required: true
   architecture:
-    description: 'The architecture'
+    description: 'The .NET architecture'
     required: true
-  program-files:
-    description: 'The programfiles'
+  dotnet-root:
+    description: 'Where .NET will be installed to'
     required: true
 runs:
   using: "composite"
@@ -17,5 +17,5 @@ runs:
     - name: Setup .NET Latest STS/LTS ${{inputs.architecture}}
       run: |
         Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
-        .\dotnet-install.ps1 -Channel ${{inputs.channel}} -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{inputs.program-files}}/dotnet" -NoPath;
+        .\dotnet-install.ps1 -Channel ${{inputs.channel}} -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{inputs.dotnet-root}}" -NoPath;
       shell: pwsh

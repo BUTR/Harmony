@@ -62,21 +62,21 @@ jobs:
         with:
           architecture: ${{inputs.architecture}}
           channel: STS
-          program-files: ${{steps.get-program-files.outputs.path}}
+          dotnet-root: ${{steps.get-program-files.outputs.path}}/dotnet
           
       - name: Setup .NET LTS ${{inputs.architecture}}
         uses: ./.github/actions/test-setup-dotnet-windows
         with:
           architecture: ${{inputs.architecture}}
           channel: LTS
-          program-files: ${{steps.get-program-files.outputs.path}}
+          dotnet-root: ${{steps.get-program-files.outputs.path}}/dotnet
          
       - name: Setup .NET ${{steps.get_channel.outputs.channel}} ${{inputs.architecture}}
         uses: ./.github/actions/test-setup-dotnet-windows
         with:
           architecture: ${{inputs.architecture}}
           channel: ${{steps.get_channel.outputs.channel}}
-          program-files: ${{steps.get-program-files.outputs.path}}
+          dotnet-root: ${{steps.get-program-files.outputs.path}}/dotnet
 
       - name: Test .NET ${{inputs.architecture}}
         run: |

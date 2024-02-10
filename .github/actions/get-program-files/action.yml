@@ -8,7 +8,7 @@ inputs:
 outputs:
   path:
     description: 'The ProgramFiles environment variable for the architecture'
-    value: ${{ steps.set-program-files.outputs.path }}
+    value: ${{ steps.set-path.outputs.path }}
 runs:
   using: "composite"
   steps:

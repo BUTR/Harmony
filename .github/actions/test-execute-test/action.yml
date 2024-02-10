@@ -50,10 +50,10 @@ runs:
           vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe";
           
           if ('${{ inputs.runtime-type == 'mono'}}' -eq 'true') {
-            "${{steps.get-program-files.outputs.path}}/Mono/bin/mono.exe" "$vstest" $env:vstest;
+            & "${{steps.get-program-files.outputs.path}}/Mono/bin/mono.exe" "$vstest" $env:vstest;
         
           } else if ('${{ inputs.runtime-type == 'fx'}}' -eq 'true') {
-            "$vstest" $env:vstest;
+            & "$vstest" $env:vstest;
         
           } else if ('${{ inputs.runtime-type == 'dotnet'}}' -eq 'true') {
             dotnet test $env:dotnet;

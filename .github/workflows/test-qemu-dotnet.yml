@@ -77,7 +77,8 @@ jobs:
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
-        if: ${{inputs.upload_tests && (success() || failure())}}
+        #if: ${{inputs.upload_tests && (success() || failure())}}
+        if: ${{inputs.upload_tests && success()}}
         with:
           name: test-results-net-ubuntu-arm64-${{inputs.target_framework}}-${{inputs.build_configuration}}
           path: '**/*.trx'

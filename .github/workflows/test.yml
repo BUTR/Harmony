@@ -134,7 +134,7 @@ jobs:
     needs: [variables, build-binaries]
     strategy:
       matrix:
-        target_framework: ${{fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS) }}
+        target_framework: ${{fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64) }}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-qemu-dotnet.yml
     with:
@@ -147,7 +147,7 @@ jobs:
     needs: [variables, build-binaries]
     strategy:
       matrix:
-        target_framework: ${{fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64) }}
+        target_framework: ${{fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS) }}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-qemu-mono.yml
     with:

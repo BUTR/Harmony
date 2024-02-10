@@ -51,7 +51,7 @@ jobs:
           path: HarmonyTests/bin/
 
       - uses: uraimo/run-on-arch-action@v2.7.1
-        name: Run commands
+        name: Test .NET
         id: build
         with:
           arch: aarch64
@@ -81,3 +81,4 @@ jobs:
         with:
           name: ${{(inputs.experimental && 'experimental-') || ''}}test-results-net-ubuntu-arm64-${{inputs.target_framework}}-${{inputs.build_configuration}}
           path: '**/*.trx'
+          if-no-files-found: ${{(inputs.experimental && 'ignore') || 'warn'}}

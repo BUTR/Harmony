@@ -74,3 +74,4 @@ jobs:
         with:
           name: ${{(inputs.experimental && 'experimental-') || ''}}test-results-net-${{inputs.os}}-${{inputs.architecture}}-${{inputs.target_framework}}-${{inputs.build_configuration}}
           path: '**/*.trx'
+          if-no-files-found: ${{(inputs.experimental && 'ignore') || 'warn'}}

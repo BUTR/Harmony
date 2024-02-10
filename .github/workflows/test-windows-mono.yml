@@ -19,6 +19,10 @@ on:
         required: false
         type: boolean
         default: true
+      continue_on_error:
+        required: false
+        type: boolean
+        default: false
 
 env:
   # Disable the .NET logo in the console output.
@@ -32,6 +36,7 @@ jobs:
   windows-mono:
     name: Mono ${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
     runs-on: windows-latest
+    continue-on-error: ${{inputs.continue_on_error}}
     steps:
       - uses: actions/checkout@v4
 

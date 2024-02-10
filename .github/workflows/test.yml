@@ -136,7 +136,6 @@ jobs:
   ubuntu-arm64-dotnet:
     name: Ubuntu .NET arm64
     needs: [variables, build-binaries]
-    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
@@ -147,11 +146,11 @@ jobs:
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
       run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'
+      continue_on_error: true
 
   ubuntu-arm64-mono:
     name: Ubuntu .NET arm64
     needs: [variables, build-binaries]
-    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
@@ -162,11 +161,11 @@ jobs:
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
       run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'
+      continue_on_error: true
 
   macos-arm64-dotnet:
     name: MacOS .NET arm64
     needs: [variables, build-binaries]
-    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
@@ -182,6 +181,7 @@ jobs:
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
       run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'
+      continue_on_error: true
 
   test-results:
     name: Download and Upload Test Results

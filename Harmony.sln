@@ -59,9 +59,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "get-program-files", "get-pr
 		.github\actions\get-programfiles\action.yml = .github\actions\get-program-files\action.yml
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test-setup-shared", "test-setup-shared", "{BBEC08CE-1F26-46B3-9EC2-F1BC7B692A56}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test-build-cache", "test-build-cache", "{BBEC08CE-1F26-46B3-9EC2-F1BC7B692A56}"
 	ProjectSection(SolutionItems) = preProject
-		.github\actions\setup-shared\action.yml = .github\actions\test-setup-shared\action.yml
+		.github\actions\setup-shared\action.yml = .github\actions\test-build-cache\action.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test-setup-dotnet-windows", "test-setup-dotnet-windows", "{AE672D7F-D913-4CED-A6B3-A21001E5C8DF}"

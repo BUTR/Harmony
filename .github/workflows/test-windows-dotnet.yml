@@ -41,42 +41,35 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Shared Test Setup
-        uses: ./.github/actions/test-setup-shared
+      - name: Download Build Cache
+        uses: ./.github/actions/test-build-cache
         with:
           os: windows
           build_configuration: ${{inputs.build_configuration}}
 
-      - uses: ./.github/actions/get-dotnet-channel
+      - name: Get .NET Channel for ${{target_framework.architecture}}
+        uses: ./.github/actions/get-dotnet-channel
         id: get_channel
         with:
           target_framework: ${{inputs.target_framework}}
-
-      - uses: ./.github/actions/get-program-files
-        id: get-program-files
-        with:
-          architecture: ${{inputs.architecture}}
 
       - name: Setup .NET LTS ${{inputs.architecture}}
         uses: ./.github/actions/test-setup-dotnet-windows
         with:
           architecture: ${{inputs.architecture}}
           channel: LTS
-          dotnet-root: ${{steps.get-program-files.outputs.path}}/dotnet
           
       - name: Setup .NET STS ${{inputs.architecture}}
         uses: ./.github/actions/test-setup-dotnet-windows
         with:
           architecture: ${{inputs.architecture}}
           channel: STS
-          dotnet-root: ${{steps.get-program-files.outputs.path}}/dotnet
          
       - name: Setup .NET ${{steps.get_channel.outputs.channel}} ${{inputs.architecture}}
         uses: ./.github/actions/test-setup-dotnet-windows
         with:
           architecture: ${{inputs.architecture}}
           channel: ${{steps.get_channel.outputs.channel}}
-          dotnet-root: ${{steps.get-program-files.outputs.path}}/dotnet
 
       - name: Test .NET ${{inputs.architecture}}
         run: |

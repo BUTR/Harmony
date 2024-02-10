@@ -5,6 +5,12 @@ inputs:
   architecture:
     description: 'The architecture to setup Mono for'
     required: true
+
+outputs:
+  path:
+    description: 'The Mono path for the architecture'
+    value: ${{ steps.set-path.outputs.path }}
+
 runs:
   using: "composite"
   steps:
@@ -30,4 +36,23 @@ runs:
         $procLog = Start-Process "powershell" "Get-Content -Path `"$log`" -Wait" -NoNewWindow -PassThru
         $procMain.WaitForExit()
         $procLog.Kill()
+      shell: pwsh
+
+    - name: Get Program Files path for ${{inputs.architecture}}
+      uses: ./.github/actions/get-program-files
+      id: get-program-files
+      with:
+        architecture: ${{inputs.architecture}}
+
+    - name: Set Mono path for ${{inputs.architecture}}
+      id: set-path
+      run: |
+        if ('${{ inputs.architecture == 'x86'}}' -eq 'true') {
+          $path = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::ProgramFilesX86);
+          "path=$path" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
+        }
+        if ('${{ inputs.architecture == 'x64'}}' -eq 'true') {
+          $path = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::ProgramFiles);
+          "path=$path/Mono/bin/mono.exe" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
+        }
       shell: pwsh

@@ -39,13 +39,13 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Download Build Cache
-        uses: actions/download-artifact@v4
+        uses: ./.github/actions/test-build-cache
         with:
-          name: build-output-ubuntu-${{inputs.build_configuration}}
-          path: HarmonyTests/bin/
+          os: ${{inputs.os}}
+          build_configuration: ${{inputs.build_configuration}}
 
-      - uses: uraimo/run-on-arch-action@v2.7.1
-        name: Test Mono
+      - name: Test Mono
+        uses: uraimo/run-on-arch-action@v2.7.1
         id: build
         with:
           arch: aarch64

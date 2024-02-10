@@ -47,8 +47,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Shared Test Setup
-        uses: ./.github/actions/test-setup-shared
+      - name: Download Build Cache
+        uses: ./.github/actions/test-build-cache
         with:
           os: ${{inputs.os}}
           build_configuration: ${{inputs.build_configuration}}

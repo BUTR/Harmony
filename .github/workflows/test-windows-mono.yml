@@ -41,20 +41,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Shared Test Setup
-        uses: ./.github/actions/test-setup-shared
+      - name: Download Build Cache
+        uses: ./.github/actions/test-build-cache
         with:
           os: windows
           build_configuration: ${{inputs.build_configuration}}
 
       - name: Setup Mono ${{inputs.architecture}}
         uses: ./.github/actions/test-setup-mono-windows
-        with:
-          architecture: ${{inputs.architecture}}
-
-      - name: Get Program Files path for ${{inputs.architecture}}
-        uses: ./.github/actions/get-program-files
-        id: get-program-files
+        id: setup-mono
         with:
           architecture: ${{inputs.architecture}}
 
@@ -64,9 +59,8 @@ jobs:
           set -x
           
           # Execute the tests via mono + vstest.console.
-          mono="${{steps.get-program-files.outputs.path}}/Mono/bin/mono.exe";
           vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe";
-          "$mono" "$vstest" "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" --framework:${{inputs.target_framework}} --logger:trx --logger:"console;verbosity=normal" --blame -- ${{inputs.run_settings_args}};
+          "${{steps.setup-mono.outputs.path}}" "$vstest" "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" --framework:${{inputs.target_framework}} --logger:trx --logger:"console;verbosity=normal" --blame -- ${{inputs.run_settings_args}};
         shell: bash
 
       - name: Upload Test Result

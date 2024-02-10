@@ -47,8 +47,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Shared Test Setup
-        uses: ./.github/actions/test-setup-shared
+      - name: Download Build Cache
+        uses: ./.github/actions/test-build-cache
         with:
           os: ${{inputs.os}}
           build_configuration: ${{inputs.build_configuration}}
@@ -56,7 +56,8 @@ jobs:
       - name: Setup .NET Sdk
         uses: actions/setup-dotnet@v4
 
-      - uses: ./.github/actions/get-dotnet-channel
+      - name: Get .NET Channel for ${{target_framework.architecture}}
+        uses: ./.github/actions/get-dotnet-channel
         id: get_channel
         with:
           target_framework: ${{inputs.target_framework}}

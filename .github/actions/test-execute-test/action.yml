@@ -62,7 +62,7 @@ runs:
             throw "Unknown runtime-type: ${{inputs.runtime-type}}";
           }
         
-        } else if ('${{inputs.os == 'ubuntu' || '${{inputs.os == 'macos' || inputs.os == 'macos-arm64'}}' -eq 'true') {
+        } else if ('${{inputs.os == 'ubuntu' || inputs.os == 'macos' || inputs.os == 'macos-arm64'}}' -eq 'true') {
             dotnet test $env:dotnet;
         
         } else {

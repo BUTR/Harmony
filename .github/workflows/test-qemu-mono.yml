@@ -54,13 +54,6 @@ jobs:
             apt-get update
             apt-get install -y wget libc6 libgcc-s1 libgssapi-krb5-2 libicu70 liblttng-ust1 libssl3 libstdc++6 libunwind8 zlib1g mono-devel
             
-            wget https://www.openssl.org/source/openssl-1.1.1c.tar.gz
-            tar -xzvf openssl-1.1.1c.tar.gz
-            cd openssl-1.1.1c
-            ./config
-            make
-            make install
-
             wget https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.sh;
             chmod +x dotnet-install.sh;
             ./dotnet-install.sh --channel STS --no-path > /dev/null;

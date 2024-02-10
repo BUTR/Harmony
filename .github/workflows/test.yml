@@ -145,7 +145,7 @@ jobs:
     with:
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
-      run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'
+      run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=arm64'
       experimental: true
 
   ubuntu-arm64-mono:
@@ -160,7 +160,7 @@ jobs:
     with:
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
-      run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'
+      run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=arm64'
       experimental: true
 
   macos-arm64-dotnet:

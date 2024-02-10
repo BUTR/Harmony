@@ -48,7 +48,7 @@ jobs:
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-build.yml
     with:
-      os: ${{ matrix.image.name }}
+      os: ${{ matrix.image.os }}
       image: ${{ matrix.image.code }}
       build_configuration: ${{ matrix.build_configuration }}
       publish: ${{ matrix.os == 'windows' }}
@@ -174,7 +174,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: [ { os: 'macos', code: 'macos-14' } ]
+        image: [ { os: 'macos-arm64', code: 'macos-14' } ]
         architecture: ['arm64']
         target_framework: ${{fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64) }}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}

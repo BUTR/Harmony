@@ -52,23 +52,31 @@ jobs:
         with:
           target_framework: ${{inputs.target_framework}}
 
-      - name: Setup .NET STS ${{inputs.architecture}}
-        uses: ./.github/actions/test-setup-dotnet-windows
+      - uses: ./.github/actions/get-program-files
+        id: get-program-files
         with:
           architecture: ${{inputs.architecture}}
-          channel: STS
-          
+
       - name: Setup .NET LTS ${{inputs.architecture}}
         uses: ./.github/actions/test-setup-dotnet-windows
         with:
           architecture: ${{inputs.architecture}}
           channel: LTS
+          dotnet-root: ${{steps.get-program-files.outputs.path}}/dotnet
+          
+      - name: Setup .NET STS ${{inputs.architecture}}
+        uses: ./.github/actions/test-setup-dotnet-windows
+        with:
+          architecture: ${{inputs.architecture}}
+          channel: STS
+          dotnet-root: ${{steps.get-program-files.outputs.path}}/dotnet
          
       - name: Setup .NET ${{steps.get_channel.outputs.channel}} ${{inputs.architecture}}
         uses: ./.github/actions/test-setup-dotnet-windows
         with:
           architecture: ${{inputs.architecture}}
           channel: ${{steps.get_channel.outputs.channel}}
+          dotnet-root: ${{steps.get-program-files.outputs.path}}/dotnet
 
       - name: Test .NET ${{inputs.architecture}}
         run: |

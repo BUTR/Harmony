@@ -79,6 +79,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test-upload-result", "test-
 		.github\actions\test-upload-result\action.yml = .github\actions\test-upload-result\action.yml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test-execute-test", "test-execute-test", "{E625C76C-C4AA-43A9-AFB5-BD1D605A4F48}"
+	ProjectSection(SolutionItems) = preProject
+		.github\actions\test-execute-test\action.yml = .github\actions\test-execute-test\action.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		DebugFat|Any CPU = DebugFat|Any CPU
@@ -136,5 +141,6 @@ Global
 		{AE672D7F-D913-4CED-A6B3-A21001E5C8DF} = {9A886F28-B059-46CC-BE43-EA234CE1DD78}
 		{B0927B75-AE86-460B-9C42-6DED427304C6} = {9A886F28-B059-46CC-BE43-EA234CE1DD78}
 		{145A597F-00D3-42D0-930D-85EF1257FA6D} = {9A886F28-B059-46CC-BE43-EA234CE1DD78}
+		{E625C76C-C4AA-43A9-AFB5-BD1D605A4F48} = {9A886F28-B059-46CC-BE43-EA234CE1DD78}
 	EndGlobalSection
 EndGlobal

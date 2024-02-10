@@ -12,9 +12,6 @@ on:
       build_configuration:
         required: true
         type: string
-      run_settings_args:
-        required: true
-        type: string
       upload_tests:
         required: false
         type: boolean
@@ -47,19 +44,13 @@ jobs:
           os: windows
           build_configuration: ${{inputs.build_configuration}}
 
-      - name: Test .NET Framework ${{inputs.architecture}}
-        run: |
-          vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe";
-          "$vstest" "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" --framework:${{inputs.target_framework}} --logger:trx --logger:"console;verbosity=normal" --blame -- ${{inputs.run_settings_args}};
-        shell: bash
-
-      - name: Upload Test Result
-        uses: ./.github/actions/test-upload-result
-        if: ${{inputs.upload_tests}}
+      - name: Test Mono ${{inputs.architecture}}
+        uses: ./.github/actions/test-execute-test
         with:
           os: windows
           architecture: ${{inputs.architecture}}
           runtime-type: fx
           target_framework: ${{inputs.target_framework}}
           build_configuration: ${{inputs.build_configuration}}
+          upload_tests: ${{inputs.upload_tests}}
           experimental: ${{inputs.experimental}}

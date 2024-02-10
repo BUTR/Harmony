@@ -1,0 +1,82 @@
+name: Test Setup Shared
+description: Shared code for test setup
+
+inputs:
+  os:
+    description: 'The operating system to use'
+    required: true
+  architecture:
+    description: 'The operating system to use'
+    required: true
+  runtime-type:
+    description: 'The build configuration to use'
+    required: true
+  target_framework:
+    description: 'The build configuration to use'
+    required: true
+  build_configuration:
+    description: 'The build configuration to use'
+    required: true
+  upload_tests:
+    description: 'The build configuration to use'
+    required: true
+  experimental:
+    description: 'The build configuration to use'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set Test Args
+      run: |
+        $run_settings_args = 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{inputs.architecture}}'
+        
+        $vstest = '"HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" --framework:${{inputs.target_framework}} --logger:trx --logger:"console;verbosity=normal" --blame -- $run_settings_args';
+        "vstest=$vstest" | Out-File -FilePath $env:GITHUB_ENV -Append;
+        
+        $dotnet = '"HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" -f ${{inputs.target_framework}} -l trx -l "console;verbosity=normal" --blame -- $run_settings_args';
+        "dotnet=$dotnet" | Out-File -FilePath $env:GITHUB_ENV -Append;
+      shell: pwsh
+
+    - name: Get Program Files path for ${{inputs.architecture}}
+      uses: ./.github/actions/get-program-files
+      id: get-program-files
+      with:
+        architecture: ${{inputs.architecture}}
+
+    - name: Perform Tests
+      run: |
+        if ('${{ inputs.os == 'windows'}}' -eq 'true') {
+          vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe";
+          
+          if ('${{ inputs.runtime-type == 'mono'}}' -eq 'true') {
+            "${{steps.get-program-files.outputs.path}}/Mono/bin/mono.exe" "$vstest" $env:vstest;
+        
+          } else if ('${{ inputs.runtime-type == 'fx'}}' -eq 'true') {
+            "$vstest" $env:vstest;
+        
+          } else if ('${{ inputs.runtime-type == 'dotnet'}}' -eq 'true') {
+            dotnet test $env:dotnet;
+        
+          } else {
+            throw "Unknown runtime-type: ${{inputs.runtime-type}}";
+          }
+        
+        } else if ('${{inputs.os == 'ubuntu' || '${{inputs.os == 'macos' || inputs.os == 'macos-arm64'}}' -eq 'true') {
+            dotnet test $env:dotnet;
+        
+        } else {
+          throw "Unknown os: ${{inputs.os}}";
+        }
+      shell: pwsh
+
+    - name: Upload Test Result
+      uses: ./.github/actions/test-upload-result
+      if: ${{inputs.upload_tests == 'true'}}
+      with:
+        os: windows
+        architecture: ${{inputs.architecture}}
+        runtime-type: mono
+        target_framework: ${{inputs.target_framework}}
+        build_configuration: ${{inputs.build_configuration}}
+        experimental: ${{inputs.experimental == 'true'}}

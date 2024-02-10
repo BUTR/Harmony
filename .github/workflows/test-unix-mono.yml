@@ -18,9 +18,6 @@ on:
       build_configuration:
         required: true
         type: string
-      run_settings_args:
-        required: true
-        type: string
       upload_tests:
         required: false
         type: boolean
@@ -57,16 +54,12 @@ jobs:
         uses: actions/setup-dotnet@v4
 
       - name: Test Mono ${{inputs.architecture}}
-        run: |
-          dotnet test "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" -f ${{inputs.target_framework}} -l trx -l "console;verbosity=normal" --blame -- ${{inputs.run_settings_args}};
-
-      - name: Upload Test Result
-        uses: ./.github/actions/test-upload-result
-        if: ${{inputs.upload_tests}}
+        uses: ./.github/actions/test-execute-test
         with:
           os: ${{inputs.os}}
           architecture: ${{inputs.architecture}}
           runtime-type: mono
           target_framework: ${{inputs.target_framework}}
           build_configuration: ${{inputs.build_configuration}}
+          upload_tests: ${{inputs.upload_tests}}
           experimental: ${{inputs.experimental}}

@@ -64,7 +64,6 @@ jobs:
       architecture: ${{ matrix.architecture }}
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
-      run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'
 
   windows-framework:
     name: Windows .NET Framework x86/x64
@@ -80,7 +79,6 @@ jobs:
       architecture: ${{ matrix.architecture }}
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
-      run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'
 
   windows-mono:
     name: Windows Mono x86/x64
@@ -96,7 +94,6 @@ jobs:
       architecture: ${{ matrix.architecture }}
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
-      run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'
 
   ubuntu-macos-x64-dotnet:
     name: Ubuntu/MacOS .NET x64
@@ -115,7 +112,6 @@ jobs:
       architecture: ${{ matrix.architecture }}
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
-      run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'
 
   ubuntu-macos-x64-mono:
     name: Ubuntu/MacOS Mono x64
@@ -134,7 +130,6 @@ jobs:
       architecture: ${{ matrix.architecture }}
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
-      run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'
 
   ubuntu-arm64-dotnet:
     name: Ubuntu .NET arm64
@@ -183,7 +178,6 @@ jobs:
       architecture: ${{ matrix.architecture }}
       target_framework: ${{ matrix.target_framework }}
       build_configuration: ${{ matrix.build_configuration }}
-      run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{matrix.architecture}}'
       experimental: true
 
   test-results:

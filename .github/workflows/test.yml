@@ -34,11 +34,9 @@ jobs:
           echo "DOTNET_TARGET_FRAMEWORKS=${{env.DOTNET_TARGET_FRAMEWORKS}}" >> $GITHUB_OUTPUT
           echo "DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64=${{env.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64}}" >> $GITHUB_OUTPUT
           echo "FRAMEWORK_TARGET_FRAMEWORKS=${{env.FRAMEWORK_TARGET_FRAMEWORKS}}" >> $GITHUB_OUTPUT
-  
-  # Something to discuss for later
-  # Should we build the binaries with different architectures? Or are different operating systems enough?
-  # I believe that we might need to build the binaries with different architectures because if ILMerging
-  # To verify that users will also be able to
+
+  # Ideally we should be able to build binaries on Ubuntu to all platforms to test
+  # and have a job that will create binaries on each platform and compare the output dll's
   build-binaries:
     name: Build Binaries
     needs: variables

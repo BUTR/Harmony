@@ -39,6 +39,8 @@ jobs:
     continue-on-error: ${{inputs.experimental}}
     timeout-minutes: 5
     steps:
+      - uses: actions/checkout@v4
+
       - name: Shared Test Setup
         uses: ./.github/actions/test-setup-shared
         with:

@@ -35,16 +35,21 @@ jobs:
           echo "DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64=${{env.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64}}" >> $GITHUB_OUTPUT
           echo "FRAMEWORK_TARGET_FRAMEWORKS=${{env.FRAMEWORK_TARGET_FRAMEWORKS}}" >> $GITHUB_OUTPUT
   
+  # Something to discuss for later
+  # Should we build the binaries with different architectures? Or are different operating systems enough?
+  # I believe that we might need to build the binaries with different architectures because if ILMerging
+  # To verify that users will also be able to
   build-binaries:
     name: Build Binaries
     needs: variables
     strategy:
       matrix:
-        os: [ 'windows', 'ubuntu', 'macos' ]
+        image: [ { os: 'windows', code: 'windows-latest' }, { os: 'ubuntu', code: 'ubuntu-latest' }, { os: 'macos', code: 'macos-13' }, { os: 'macos-arm64', code: 'macos-14' } ]
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-build.yml
     with:
-      os: ${{ matrix.os }}
+      os: ${{ matrix.image.name }}
+      image: ${{ matrix.image.code }}
       build_configuration: ${{ matrix.build_configuration }}
       publish: ${{ matrix.os == 'windows' }}
 
@@ -101,7 +106,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: [ { code: 'ubuntu-latest', os: 'ubuntu' }, { code: 'macos-13', os: 'macos' }]
+        image: [ { os: 'ubuntu', code: 'ubuntu-latest' }, { os: 'macos', code: 'macos-13' } ]
         architecture: ['x64']
         target_framework: ${{fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS)}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
@@ -120,7 +125,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: [ { code: 'ubuntu-latest', os: 'ubuntu' }, { code: 'macos-13', os: 'macos' }]
+        image: [ { os: 'ubuntu', code: 'ubuntu-latest' }, { os: 'macos', code: 'macos-13' } ]
         architecture: ['x64']
         target_framework: ${{fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS)}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
@@ -169,7 +174,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: [ { code: 'macos-14', os: 'macos' }]
+        image: [ { os: 'macos', code: 'macos-14' } ]
         architecture: ['arm64']
         target_framework: ${{fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64) }}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}

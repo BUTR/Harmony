@@ -8,6 +8,9 @@ on:
       os:
         required: true
         type: string
+      image:
+        required: true
+        type: string
       build_configuration:
         required: true
         type: string
@@ -26,7 +29,7 @@ env:
 jobs:
   build-output-cache:
     name: Upload Test Build Output Cache
-    runs-on: ubuntu-latest
+    runs-on: ${{inputs.image}}
     steps:
       - uses: actions/checkout@v4
 

@@ -98,5 +98,5 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{inputs.upload_tests && (success() || failure())}}
         with:
-          name: ${{inputs.experimental && 'experimental-'}}test-results-mono-windows-${{inputs.architecture}}-${{inputs.target_framework}}-${{inputs.build_configuration}}
+          name: ${{(inputs.experimental && 'experimental-') || ''}}test-results-mono-windows-${{inputs.architecture}}-${{inputs.target_framework}}-${{inputs.build_configuration}}
           path: '**/*.trx'

@@ -209,3 +209,6 @@ jobs:
       - uses: joutvhu/delete-artifact@v2
         with:
           pattern: test-results-*
+      - uses: joutvhu/delete-artifact@v2
+        with:
+          pattern: experimental-test-results-*

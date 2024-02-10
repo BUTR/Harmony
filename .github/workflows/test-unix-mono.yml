@@ -53,6 +53,9 @@ jobs:
           os: ${{inputs.os}}
           build_configuration: ${{inputs.build_configuration}}
 
+      - name: Setup .NET Sdk
+        uses: actions/setup-dotnet@v4
+
       - name: Test Mono ${{inputs.architecture}}
         run: |
           dotnet test "HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" -f ${{inputs.target_framework}} -l trx -l "console;verbosity=normal" --blame -- ${{inputs.run_settings_args}};
@@ -63,6 +66,7 @@ jobs:
         with:
           os: ${{inputs.os}}
           architecture: ${{inputs.architecture}}
+          runtime-type: mono
           target_framework: ${{inputs.target_framework}}
           build_configuration: ${{inputs.build_configuration}}
           experimental: ${{inputs.experimental}}

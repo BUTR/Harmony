@@ -8,6 +8,9 @@ inputs:
   architecture:
     description: 'The operating system to use'
     required: true
+  runtime-type:
+    description: 'The operating system to use'
+    required: true
   target_framework:
     description: 'The operating system to use'
     required: true
@@ -24,6 +27,6 @@ runs:
       uses: actions/upload-artifact@v4
       if: ${{success() || failure()}}
       with:
-        name: ${{(inputs.experimental && 'experimental-') || ''}}test-results-net-${{inputs.os}}-${{inputs.architecture}}-${{inputs.target_framework}}-${{inputs.build_configuration}}
+        name: ${{(inputs.experimental && 'experimental-') || ''}}test-results-${{inputs.runtime-type}}-${{inputs.os}}-${{inputs.architecture}}-${{inputs.target_framework}}-${{inputs.build_configuration}}
         path: '**/*.trx'
         if-no-files-found: ${{(inputs.experimental && 'ignore') || 'warn'}}

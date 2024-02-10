@@ -8,14 +8,11 @@ inputs:
   architecture:
     description: 'The .NET architecture'
     required: true
-  dotnet-root:
-    description: 'Where .NET will be installed to'
-    required: true
 runs:
   using: "composite"
   steps:
     - name: Setup .NET Latest STS/LTS ${{inputs.architecture}}
       run: |
         Invoke-WebRequest 'https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1' -OutFile dotnet-install.ps1;
-        .\dotnet-install.ps1 -Channel ${{inputs.channel}} -Architecture ${{inputs.architecture}} -Runtime dotnet -InstallDir "${{inputs.dotnet-root}}" -NoPath;
+        .\dotnet-install.ps1 -Runtime dotnet -SkipNonVersionedFiles -Channel ${{inputs.channel}} -Architecture ${{inputs.architecture}};
       shell: pwsh

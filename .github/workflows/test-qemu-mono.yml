@@ -74,6 +74,7 @@ jobs:
         with:
           os: ${{inputs.os}}
           architecture: ${{inputs.architecture}}
+          runtime-type: mono
           target_framework: ${{inputs.target_framework}}
           build_configuration: ${{inputs.build_configuration}}
           experimental: ${{inputs.experimental}}

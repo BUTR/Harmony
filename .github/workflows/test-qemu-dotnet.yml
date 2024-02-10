@@ -81,6 +81,7 @@ jobs:
         with:
           os: ${{inputs.os}}
           architecture: ${{inputs.architecture}}
+          runtime-type: dotnet
           target_framework: ${{inputs.target_framework}}
           build_configuration: ${{inputs.build_configuration}}
           experimental: ${{inputs.experimental}}

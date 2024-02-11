@@ -9,6 +9,18 @@ on:
       - 'Harmony/Documentation/*'
   workflow_dispatch: 
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 env:
   # Disable the .NET logo in the console output.
   DOTNET_NOLOGO: true
@@ -21,6 +33,9 @@ jobs:
   docfx:
     name: DocFX Documentation
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: DocFX Setup
         uses: butr/actions-docfx-setup@v4
@@ -35,10 +50,14 @@ jobs:
           docfx Harmony/Documentation/docfx.json;
         shell: pwsh
 
-      - name: Deploy DocFX
-        uses: crazy-max/ghaction-github-pages@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          target_branch: gh-pages
-          build_dir: docs
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          path: docs
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

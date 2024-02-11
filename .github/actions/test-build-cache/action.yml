@@ -1,5 +1,5 @@
-name: Test Setup Shared
-description: Shared code for test setup
+name: Test Download Build Cache
+description: Download the build cache for the specified operating system and build configuration
 
 inputs:
   os:

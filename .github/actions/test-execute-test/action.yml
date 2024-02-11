@@ -1,5 +1,5 @@
-name: Test Setup Shared
-description: Shared code for test setup
+name: Test Execute Test
+description: Executes the tests
 
 inputs:
   os:

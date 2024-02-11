@@ -71,7 +71,7 @@ runs:
       shell: pwsh
       
     - name: Perform Tests Ubuntu/MacOS/MacOS-arm64 .NET/Mono
-      if: ${{inpus.os == 'ubuntu' || inputs.os == 'macos' || inputs.os == 'macos-arm64'}}
+      if: ${{inputs.os == 'ubuntu' || inputs.os == 'macos' || inputs.os == 'macos-arm64'}}
       run: |
         dotnet test ${{steps.test-args.outputs.dotnet}};
       shell: pwsh

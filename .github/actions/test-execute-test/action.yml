@@ -31,6 +31,7 @@ runs:
       id: test-args
       run: |
         $run_settings_args = 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{inputs.architecture}}'
+        "run_settings_args=$run_settings_args" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
         
         $vstest = '"HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" --framework:${{inputs.target_framework}} --logger:trx --logger:"console;verbosity=normal" --blame';
         "vstest=$vstest" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;

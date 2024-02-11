@@ -6,22 +6,22 @@ inputs:
     description: 'The operating system to use'
     required: true
   architecture:
-    description: 'The operating system to use'
+    description: 'The architecture to use'
     required: true
   runtime-type:
-    description: 'The build configuration to use'
+    description: 'Values: "dotnet", "mono", "fx"'
     required: true
   target_framework:
-    description: 'The build configuration to use'
+    description: 'The target framework to use'
     required: true
   build_configuration:
     description: 'The build configuration to use'
     required: true
   upload_tests:
-    description: 'The build configuration to use'
+    description: 'Whether to upload the test results'
     required: true
   experimental:
-    description: 'The build configuration to use'
+    description: 'Whether the tests are mandatory for the build to pass'
     required: true
 
 runs:
@@ -45,32 +45,35 @@ runs:
       with:
         architecture: ${{inputs.architecture}}
 
-    - name: Perform Tests
+    - name: Perform Tests Windows Mono
+      if: ${{inputs.os == 'windows' && inputs.runtime-type == 'mono'}}
       run: |
-        if ('${{ inputs.os == 'windows'}}' -eq 'true') {
-          $vspath = vswhere -latest -property installationPath;
-          $vstest = join-path $vspath "Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe";
-  
-          if ('${{ inputs.runtime-type == 'mono'}}' -eq 'true') {
-            $mono = "${{steps.get-program-files.outputs.path}}/Mono/bin/mono.exe";
-            & "$mono" "$vstest" ${{steps.test-args.outputs.vstest}};
+        $vspath = vswhere -latest -property installationPath;
+        $vstest = join-path $vspath "Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe";
         
-          } elseif ('${{ inputs.runtime-type == 'fx'}}' -eq 'true') {
-            & "$vstest" ${{steps.test-args.outputs.vstest}};
+        $mono = "${{steps.get-program-files.outputs.path}}/Mono/bin/mono.exe";
+        & "$mono" "$vstest" ${{steps.test-args.outputs.vstest}};
+      shell: pwsh
+      
+    - name: Perform Tests Windows FX
+      if: ${{inputs.os == 'windows' && inputs.runtime-type == 'fx'}}
+      run: |
+        $vspath = vswhere -latest -property installationPath;
+        $vstest = join-path $vspath "Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe";
         
-          } elseif ('${{ inputs.runtime-type == 'dotnet'}}' -eq 'true') {
-            dotnet test ${{steps.test-args.outputs.dotnet}};
-        
-          } else {
-            throw "Unknown runtime-type: ${{inputs.runtime-type}}";
-          }
-        
-        } elseif ('${{inputs.os == 'ubuntu' || inputs.os == 'macos' || inputs.os == 'macos-arm64'}}' -eq 'true') {
-            dotnet test $env:dotnet;
-        
-        } else {
-          throw "Unknown os: ${{inputs.os}}";
-        }
+        & "$vstest" ${{steps.test-args.outputs.vstest}};
+      shell: pwsh
+      
+    - name: Perform Tests Windows .NET
+      if: ${{inputs.os == 'windows' && inputs.runtime-type == 'dotnet'}}
+      run: |
+        dotnet test ${{steps.test-args.outputs.dotnet}};
+      shell: pwsh
+      
+    - name: Perform Tests Ubuntu/MacOS/MacOS-arm64 .NET/Mono
+      if: ${{inpus.os == 'ubuntu' || inputs.os == 'macos' || inputs.os == 'macos-arm64'}}
+      run: |
+        dotnet test ${{steps.test-args.outputs.dotnet}};
       shell: pwsh
 
     - name: Upload Test Result

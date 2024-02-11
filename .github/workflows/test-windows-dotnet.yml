@@ -6,20 +6,25 @@ on:
       architecture:
         required: true
         type: string
+        description: 'The architecture to use'
       target_framework:
         required: true
         type: string
+        description: 'The target framework to use'
       build_configuration:
         required: true
         type: string
+        description: 'The build configuration to use'
       upload_tests:
         required: false
         type: boolean
         default: true
+        description: 'Whether to upload the test results'
       experimental:
         required: false
         type: boolean
         default: false
+        description: 'Whether the tests are mandatory for the build to pass'
 
 env:
   # Disable the .NET logo in the console output.
@@ -68,7 +73,7 @@ jobs:
           architecture: ${{inputs.architecture}}
           channel: ${{steps.get_channel.outputs.channel}}
 
-      - name: Test Mono ${{inputs.architecture}}
+      - name: Test .NET ${{inputs.architecture}}
         uses: ./.github/actions/test-execute-test
         with:
           os: windows

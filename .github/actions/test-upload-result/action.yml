@@ -6,19 +6,19 @@ inputs:
     description: 'The operating system to use'
     required: true
   architecture:
-    description: 'The operating system to use'
+    description: 'The architecture to use'
     required: true
   runtime-type:
-    description: 'The operating system to use'
+    description: 'Values: "dotnet", "mono", "fx"'
     required: true
   target_framework:
-    description: 'The operating system to use'
+    description: 'The target framework to use'
     required: true
   build_configuration:
     description: 'The build configuration to use'
     required: true
   experimental:
-    description: 'The build configuration to use'
+    description: 'Whether the tests are mandatory for the build to pass'
     required: true
     #type: boolean # We don't have boolean types in composites https://github.com/actions/runner/issues/2238
 

@@ -3,12 +3,12 @@ description: Get ProgramFiles path for the architecture
 
 inputs:
   architecture:
-    description: 'The architecture to setup Mono for'
+    description: 'The architecture to use'
     required: true
 
 outputs:
   path:
-    description: 'The ProgramFiles environment variable for the architecture'
+    description: 'The ProgramFiles path for the architecture'
     value: ${{ steps.set-path.outputs.path }}
 
 runs:

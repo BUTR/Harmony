@@ -6,26 +6,33 @@ on:
       os:
         required: true
         type: string
+        description: 'The operating system to use'
       image:
         required: true
         type: string
+        description: 'The image to use'
       architecture:
         required: true
         type: string
+        description: 'The architecture to use'
       target_framework:
         required: true
         type: string
+        description: 'The target framework to use'
       build_configuration:
         required: true
         type: string
+        description: 'The build configuration to use'
       upload_tests:
         required: false
         type: boolean
         default: true
+        description: 'Whether to upload the test results'
       experimental:
         required: false
         type: boolean
         default: false
+        description: 'Whether the tests are mandatory for the build to pass'
 
 env:
   # Disable the .NET logo in the console output.

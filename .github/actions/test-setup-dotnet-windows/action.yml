@@ -3,10 +3,10 @@ description: Setup .NET for Windows using the provided channel and architecture
 
 inputs:
   channel:
-    description: 'The .NET channel'
+    description: 'The .NET channel to setup'
     required: true
   architecture:
-    description: 'The .NET architecture'
+    description: 'The .NET architecture to setup'
     required: true
 
 runs:

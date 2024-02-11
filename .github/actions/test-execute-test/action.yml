@@ -47,10 +47,12 @@ runs:
     - name: Perform Tests
       run: |
         if ('${{ inputs.os == 'windows'}}' -eq 'true') {
-          vstest="$(vswhere.exe -latest -property installationPath)/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe";
-          
+          $vspath = vswhere -latest -property installationPath;
+          $vstest = join-path $vspath "Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe";
+  
           if ('${{ inputs.runtime-type == 'mono'}}' -eq 'true') {
-            & "${{steps.get-program-files.outputs.path}}/Mono/bin/mono.exe" "$vstest" $env:vstest;
+            $mono = "${{steps.get-program-files.outputs.path}}/Mono/bin/mono.exe";
+            & "$mono" "$vstest" $env:vstest;
         
           } elseif ('${{ inputs.runtime-type == 'fx'}}' -eq 'true') {
             & "$vstest" $env:vstest;

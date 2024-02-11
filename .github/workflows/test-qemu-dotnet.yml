@@ -41,7 +41,7 @@ jobs:
       - name: Download Build Cache
         uses: ./.github/actions/test-build-cache
         with:
-          os: ${{inputs.os}}
+          os: ubuntu
           build_configuration: ${{inputs.build_configuration}}
 
       - name: Get .NET Channel for ${{inputs.target_framework}}

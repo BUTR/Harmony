@@ -1,10 +1,11 @@
-name: Build Harmony Documentation
+name: Build Documentation
 
 on:
   push:
     branches:
       - master
     paths:
+      - '.github/workflows/docs.yml'
       - 'Harmony/Documentation/*'
   workflow_dispatch: 
 
@@ -38,6 +39,6 @@ jobs:
         uses: crazy-max/ghaction-github-pages@v4
         with:
           target_branch: gh-pages
-          build_dir: docs/_site
+          build_dir: docs
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

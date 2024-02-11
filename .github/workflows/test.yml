@@ -5,11 +5,13 @@ on:
     branches:
       - master
     paths-ignore:
+      - '.github/workflows/docs.yml'
       - 'Harmony/Documentation/*'
   pull_request:
     branches:
       - master
     paths-ignore:
+      - '.github/workflows/docs.yml'
       - 'Harmony/Documentation/*'
   workflow_dispatch: 
 

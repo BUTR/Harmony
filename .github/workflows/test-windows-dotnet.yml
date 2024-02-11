@@ -49,30 +49,12 @@ jobs:
           os: windows
           build_configuration: ${{inputs.build_configuration}}
 
-      - name: Get .NET Channel for ${{inputs.target_framework}}
-        uses: ./.github/actions/get-dotnet-channel
-        id: get_channel
+      - name: Setup .NET Latest/${{steps.get_channel.outputs.channel}} ${{inputs.architecture}}
+        uses: ./.github/actions/test-setup-dotnet-windows
         with:
+          architecture: ${{inputs.architecture}}
           target_framework: ${{inputs.target_framework}}
-
-      - name: Setup .NET LTS ${{inputs.architecture}}
-        uses: ./.github/actions/test-setup-dotnet-windows
-        with:
-          architecture: ${{inputs.architecture}}
-          channel: LTS
           
-      - name: Setup .NET STS ${{inputs.architecture}}
-        uses: ./.github/actions/test-setup-dotnet-windows
-        with:
-          architecture: ${{inputs.architecture}}
-          channel: STS
-         
-      - name: Setup .NET ${{steps.get_channel.outputs.channel}} ${{inputs.architecture}}
-        uses: ./.github/actions/test-setup-dotnet-windows
-        with:
-          architecture: ${{inputs.architecture}}
-          channel: ${{steps.get_channel.outputs.channel}}
-
       - name: Test .NET ${{inputs.architecture}}
         uses: ./.github/actions/test-execute-test
         with:

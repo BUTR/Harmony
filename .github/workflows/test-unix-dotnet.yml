@@ -57,19 +57,11 @@ jobs:
           os: ${{inputs.os}}
           build_configuration: ${{inputs.build_configuration}}
 
-      - name: Setup .NET Sdk
-        uses: actions/setup-dotnet@v4
-
-      - name: Get .NET Channel for ${{inputs.target_framework}}
-        uses: ./.github/actions/get-dotnet-channel
-        id: get_channel
+      - name: Setup .NET Latest/${{steps.get_channel.outputs.channel}} ${{inputs.architecture}}
+        uses: ./.github/actions/test-setup-dotnet
         with:
+          architecture: ${{inputs.architecture}}
           target_framework: ${{inputs.target_framework}}
-
-      - name: Setup .NET ${{steps.get_channel.outputs.channel}}
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{steps.get_channel.outputs.channel}}
 
       - name: Test .NET ${{inputs.architecture}}
         uses: ./.github/actions/test-execute-test

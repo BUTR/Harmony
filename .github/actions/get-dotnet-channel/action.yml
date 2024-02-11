@@ -14,7 +14,7 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: Set Channel env
+    - name: Set Channel
       id: set_channel
       run: |
         $channel = '${{inputs.target_framework}}'.Replace('coreapp', '').Replace('net', '');

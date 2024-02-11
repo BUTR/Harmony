@@ -29,7 +29,5 @@ jobs:
           check_name: Test Results ${{(inputs.experimental && '(Experimental)') || ''}}
           files: test-results/**/*.trx
           fail_on: ${{(inputs.experimental && 'nothing') || 'test failures'}}
-          #ignore_runs: ${{inputs.experimental}}
           check_run: ${{!inputs.experimental}}
           comment_mode: ${{(inputs.experimental && 'off') || 'always'}}
-          #check_run_annotations: ${{(inputs.experimental && 'none') || 'all tests, skipped tests'}}

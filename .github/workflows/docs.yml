@@ -1,0 +1,46 @@
+name: Perform Testing
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch: 
+
+env:
+  # You are interested in changing these values
+  BUILD_CONFIGURATIONS:                 "['ReleaseFat', 'ReleaseThin']"
+  DOTNET_TARGET_FRAMEWORKS:             "['netcoreapp3.0', 'netcoreapp3.1', 'net5.0', 'net6.0', 'net7.0', 'net8.0']"
+  DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64: "['net6.0', 'net7.0', 'net8.0']"
+  FRAMEWORK_TARGET_FRAMEWORKS:          "['net35', 'net452', 'net472', 'net48']"
+
+jobs:
+  docfx:
+    name: DocFX Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: DocFX Setup
+        uses: butr/actions-docfx-setup@v4
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Build Harmony
+        run: dotnet build Harmony/Harmony.csproj;
+
+      - name: Run DocFX
+        run: |
+          Copy-Item "README.md" -Destination "docs/index.md";
+          New-Item -Type dir "docs/images";
+          Copy-Item "resources/BUTR48.svg" -Destination "docs/images/BUTR48.svg";
+          docfx Harmony/Documentation/docfx.json;
+        shell: pwsh
+
+      - name: Deploy DocFX
+        uses: crazy-max/ghaction-github-pages@v4
+        with:
+          target_branch: gh-pages
+          build_dir: docs/_site
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

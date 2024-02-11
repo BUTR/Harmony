@@ -28,14 +28,15 @@ runs:
   using: "composite"
   steps:
     - name: Set Test Args
+      id: test-args
       run: |
         $run_settings_args = 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{inputs.architecture}}'
         
         $vstest = '"HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" --framework:${{inputs.target_framework}} --logger:trx --logger:"console;verbosity=normal" --blame -- $run_settings_args';
-        "vstest=$vstest" | Out-File -FilePath $env:GITHUB_ENV -Append;
+        "vstest=$vstest" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
         
         $dotnet = '"HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" -f ${{inputs.target_framework}} -l trx -l "console;verbosity=normal" --blame -- $run_settings_args';
-        "dotnet=$dotnet" | Out-File -FilePath $env:GITHUB_ENV -Append;
+        "dotnet=$dotnet" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
       shell: pwsh
 
     - name: Get Program Files path for ${{inputs.architecture}}
@@ -52,13 +53,13 @@ runs:
   
           if ('${{ inputs.runtime-type == 'mono'}}' -eq 'true') {
             $mono = "${{steps.get-program-files.outputs.path}}/Mono/bin/mono.exe";
-            & "$mono" "$vstest" $env:vstest;
+            & "$mono" "$vstest" ${{steps.test-args.outputs.vstest}};
         
           } elseif ('${{ inputs.runtime-type == 'fx'}}' -eq 'true') {
-            & "$vstest" $env:vstest;
+            & "$vstest" ${{steps.test-args.outputs.vstest}};
         
           } elseif ('${{ inputs.runtime-type == 'dotnet'}}' -eq 'true') {
-            dotnet test $env:dotnet;
+            dotnet test ${{steps.test-args.outputs.dotnet}};
         
           } else {
             throw "Unknown runtime-type: ${{inputs.runtime-type}}";

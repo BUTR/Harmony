@@ -79,7 +79,7 @@ runs:
 
     - name: Upload Test Result
       uses: ./.github/actions/test-upload-result
-      if: ${{inputs.upload_tests == 'true'}}
+      if: ${{(inputs.upload_tests == 'true') && (always() || failure())}}
       with:
         os: ${{inputs.os}}
         architecture: ${{inputs.architecture}}

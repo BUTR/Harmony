@@ -51,7 +51,6 @@ jobs:
 
       - name: Setup Mono ${{inputs.architecture}}
         uses: ./.github/actions/test-setup-mono-windows
-        id: setup-mono
         with:
           architecture: ${{inputs.architecture}}
 

@@ -80,9 +80,9 @@ runs:
       uses: ./.github/actions/test-upload-result
       if: ${{inputs.upload_tests == 'true'}}
       with:
-        os: windows
+        os: ${{inputs.os}}
         architecture: ${{inputs.architecture}}
-        runtime-type: mono
+        runtime-type: ${{inputs.runtime-type}}
         target_framework: ${{inputs.target_framework}}
         build_configuration: ${{inputs.build_configuration}}
         experimental: ${{inputs.experimental == 'true'}}

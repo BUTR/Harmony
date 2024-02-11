@@ -57,7 +57,7 @@ jobs:
           os: ${{inputs.os}}
           build_configuration: ${{inputs.build_configuration}}
 
-      - name: Setup .NET Latest/${{steps.get_channel.outputs.channel}} ${{inputs.architecture}}
+      - name: Setup .NET Latest/${{inputs.target_framework}} ${{inputs.architecture}}
         uses: ./.github/actions/test-setup-dotnet
         with:
           architecture: ${{inputs.architecture}}

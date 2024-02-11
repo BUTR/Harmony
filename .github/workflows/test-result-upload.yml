@@ -30,7 +30,6 @@ jobs:
           files: test-results/**/*.trx
           fail_on: ${{(inputs.experimental && 'nothing') || 'test failures'}}
           #ignore_runs: ${{inputs.experimental}}
-          job_summary: ${{!inputs.experimental}}
           check_run: ${{!inputs.experimental}}
           comment_mode: ${{(inputs.experimental && 'off') || 'always'}}
           #check_run_annotations: ${{(inputs.experimental && 'none') || 'all tests, skipped tests'}}

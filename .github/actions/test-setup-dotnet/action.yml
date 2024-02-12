@@ -5,8 +5,8 @@ inputs:
   architecture:
     description: 'The .NET architecture to setup'
     required: true
-  target_framework:
-    description: 'The .NET target framework to setup'
+  target_framework_array:
+    description: 'The .NET target frameworks to setup'
     required: true
 
 runs:

@@ -126,20 +126,18 @@ jobs:
   ubuntu-macos-x64-mono:
     name: Ubuntu/MacOS Mono x64
     needs: [variables, build-binaries]
-    if: false
     strategy:
       fail-fast: false
       matrix:
         image: [ { os: 'ubuntu', code: 'ubuntu-latest' }, { os: 'macos', code: 'macos-13' } ]
         architecture: ['x64']
-        target_framework: ${{fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS)}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-unix-mono.yml
     with:
       os: ${{ matrix.image.os }}
       image: ${{ matrix.image.code }}
       architecture: ${{ matrix.architecture }}
-      target_framework: ${{ matrix.target_framework }}
+      target_framework_array: ${{needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS}}
       build_configuration: ${{ matrix.build_configuration }}
 
   ubuntu-arm64-dotnet:
@@ -220,5 +218,6 @@ jobs:
         with:
           pattern: test-results-*
       - uses: joutvhu/delete-artifact@v2
+        if: false
         with:
           pattern: experimental-test-results-*

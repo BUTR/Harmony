@@ -1,5 +1,7 @@
 name: Test Execute Test
-description: Executes the tests
+description: |
+  Execute the tests for the specified operating system, architecture, runtime type, target framework, and build configuration.
+  You can use `target_framework` for a single test or `target_framework_array` for multiple tests.
 
 inputs:
   os:
@@ -71,7 +73,17 @@ runs:
     - name: Perform Tests Windows .NET
       if: ${{inputs.os == 'windows' && inputs.runtime-type == 'dotnet'}}
       run: |
-        dotnet test ${{steps.test-args.outputs.dotnet}} -- ${{steps.test-args.outputs.run_settings_args}};
+        $target_framework = "${{inputs.target_framework}}";
+        if ($target_framework -ne '') {
+          dotnet test ${{steps.test-args.outputs.dotnet}} -- ${{steps.test-args.outputs.run_settings_args}};
+        }
+        
+        $target_frameworks = "${{inputs.target_framework_array}}";
+        if ($target_frameworks -ne '') {
+          foreach ($target_framework in ConvertFrom-Json $target_frameworks) {
+            dotnet test "HarmonyTests/bin/Release/$target_framework/HarmonyTests.dll" -f $target_framework -l trx -l "console;verbosity=normal" --blame -- ${{steps.test-args.outputs.run_settings_args}};
+          }
+        }
       shell: pwsh
       
     - name: Perform Tests Ubuntu/MacOS/MacOS-arm64 .NET/Mono
@@ -79,7 +91,6 @@ runs:
       run: |
         $target_framework = "${{inputs.target_framework}}";
         if ($target_framework -ne '') {
-          echo "dotnet test ${{steps.test-args.outputs.dotnet}} -- ${{steps.test-args.outputs.run_settings_args}}";
           dotnet test ${{steps.test-args.outputs.dotnet}} -- ${{steps.test-args.outputs.run_settings_args}};
         }
         

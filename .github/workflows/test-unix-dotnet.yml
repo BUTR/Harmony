@@ -18,7 +18,7 @@ on:
       target_framework_array:
         required: true
         type: string
-        description: 'The target framework to use'
+        description: 'The target frameworks to use'
       build_configuration:
         required: true
         type: string

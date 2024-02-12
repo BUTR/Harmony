@@ -1,5 +1,8 @@
 name: Convert Target Framework to Channel
-description: Convert Target Framework to Channel
+description: |
+  Convert Target Framework to Channel.
+  Use `target_framework` for a single conversion with `channel` as output.
+  Use `target_framework_array` for a single conversion with `channels_multiline` as output.
 
 inputs:
   target_framework:

@@ -21,6 +21,11 @@ on:
         required: true
         type: boolean
         description: 'Whether to publish the build artifacts'
+      do_build:
+        required: false
+        type: boolean
+        description: 'Whether to do the build'
+        default: true
 
 env:
   # Disable the .NET logo in the console output.
@@ -34,6 +39,7 @@ jobs:
   build-output-cache:
     name: Upload Test Build Output Cache
     runs-on: ${{inputs.image}}
+    if: ${{inputs.do_build}}
     steps:
       - uses: actions/checkout@v4
 

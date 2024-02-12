@@ -53,7 +53,7 @@ jobs:
 
       - name: Download Build Cache
         uses: ./.github/actions/test-build-cache
-        continue-on-error: ${{inputs.target_framework_array != ''}} # Optional when using multiple target frameworks
+        if: ${{inputs.target_framework != ''}} # Optional when using multiple target frameworks
         with:
           os: ${{inputs.os}}
           build_configuration: ${{inputs.build_configuration}}

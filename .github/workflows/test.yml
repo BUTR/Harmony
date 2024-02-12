@@ -46,7 +46,6 @@ jobs:
   build-binaries:
     name: Build Binaries
     needs: variables
-    if : false
     strategy:
       matrix:
         #image: [ { os: 'windows', code: 'windows-latest' }, { os: 'ubuntu', code: 'ubuntu-latest' }, { os: 'macos', code: 'macos-13' }, { os: 'macos-arm64', code: 'macos-14' } ]
@@ -61,8 +60,7 @@ jobs:
 
   windows-dotnet:
     name: Windows .NET x86/x64
-    #needs: [variables, build-binaries]
-    needs: [variables]
+    needs: [variables, build-binaries]
     if: false
     strategy:
       matrix:
@@ -77,8 +75,7 @@ jobs:
 
   windows-framework:
     name: Windows .NET Framework x86/x64
-    #needs: [variables, build-binaries]
-    needs: [variables]
+    needs: [variables, build-binaries]
     if: false
     strategy:
       fail-fast: false
@@ -94,8 +91,7 @@ jobs:
 
   windows-mono:
     name: Windows Mono x86/x64
-    #needs: [variables, build-binaries]
-    needs: [variables]
+    needs: [variables, build-binaries]
     if: false
     strategy:
       fail-fast: false
@@ -111,8 +107,7 @@ jobs:
 
   ubuntu-macos-x64-dotnet:
     name: Ubuntu/MacOS .NET x64
-    #needs: [variables, build-binaries]
-    needs: [variables]
+    needs: [variables, build-binaries]
     strategy:
       fail-fast: false
       matrix:
@@ -130,8 +125,7 @@ jobs:
 
   ubuntu-macos-x64-mono:
     name: Ubuntu/MacOS Mono x64
-    #needs: [variables, build-binaries]
-    needs: [variables]
+    needs: [variables, build-binaries]
     strategy:
       fail-fast: false
       matrix:
@@ -148,8 +142,7 @@ jobs:
 
   ubuntu-arm64-dotnet:
     name: Ubuntu .NET arm64
-    #needs: [variables, build-binaries]
-    needs: [variables]
+    needs: [variables, build-binaries]
     if: false
     strategy:
       fail-fast: false
@@ -165,8 +158,7 @@ jobs:
 
   ubuntu-arm64-mono:
     name: Ubuntu .NET arm64
-    #needs: [variables, build-binaries]
-    needs: [variables]
+    needs: [variables, build-binaries]
     if: false
     strategy:
       fail-fast: false
@@ -182,8 +174,7 @@ jobs:
 
   macos-arm64-dotnet:
     name: MacOS .NET arm64
-    #needs: [variables, build-binaries]
-    needs: [variables]
+    needs: [variables, build-binaries]
     if: false
     strategy:
       fail-fast: false

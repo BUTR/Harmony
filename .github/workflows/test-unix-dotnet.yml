@@ -15,6 +15,10 @@ on:
         required: true
         type: string
         description: 'The architecture to use'
+      target_framework:
+        required: true
+        type: string
+        description: 'The target framework to use'
       target_framework_array:
         required: true
         type: string
@@ -44,7 +48,7 @@ env:
 
 jobs:
   unix-net:
-    name: .NET ${{inputs.os}}-${{inputs.architecture}} ${{inputs.build_configuration}}
+    name: .NET ${{inputs.os}}-${{inputs.architecture}} ${{ inputs.target_framework }} ${{inputs.build_configuration}}
     runs-on: ${{inputs.image}}
     continue-on-error: ${{inputs.experimental}}
     timeout-minutes: 5
@@ -61,6 +65,7 @@ jobs:
         uses: ./.github/actions/test-setup-dotnet
         with:
           architecture: ${{inputs.architecture}}
+          target_framework: ${{inputs.target_framework}}
           target_framework_array: ${{inputs.target_framework_array}}
 
       - name: Test .NET ${{inputs.architecture}}
@@ -69,6 +74,7 @@ jobs:
           os: ${{inputs.os}}
           architecture: ${{inputs.architecture}}
           runtime-type: dotnet
+          target_framework: ${{inputs.target_framework}}
           target_framework_array: ${{inputs.target_framework_array}}
           build_configuration: ${{inputs.build_configuration}}
           upload_tests: ${{inputs.upload_tests}}

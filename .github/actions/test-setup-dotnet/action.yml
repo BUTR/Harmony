@@ -5,6 +5,9 @@ inputs:
   architecture:
     description: 'The .NET architecture to setup'
     required: true
+  target_framework:
+    description: 'The .NET target framework to setup'
+    required: true
   target_framework_array:
     description: 'The .NET target frameworks to setup'
     required: true
@@ -19,12 +22,12 @@ runs:
       uses: ./.github/actions/get-dotnet-channel
       id: get_channels
       with:
+        target_framework: ${{inputs.target_framework}}
         target_framework_array: ${{inputs.target_framework_array}}
-
-    - run: echo "${{steps.get_channels.outputs.channels_multiline}}"
-      shell: pwsh
 
     - name: Setup .NET ${{steps.get_channels.outputs.channels_multiline}}
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: ${{steps.get_channels.outputs.channels_multiline}}
+        dotnet-version: |
+          ${{steps.get_channels.outputs.channel}}
+          ${{steps.get_channels.outputs.channels_multiline}}

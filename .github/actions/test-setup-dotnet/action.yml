@@ -19,9 +19,9 @@ runs:
       uses: ./.github/actions/get-dotnet-channel
       id: get_channel
       with:
-        target_framework: ${{inputs.target_framework}}
+        target_framework_array: ${{inputs.target_framework_array}}
 
     - name: Setup .NET ${{steps.get_channel.outputs.channel}}
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: ${{steps.get_channel.outputs.channel}}
+        dotnet-version: ${{steps.get_channel.outputs.channels_multiline}}

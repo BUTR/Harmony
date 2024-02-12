@@ -120,7 +120,7 @@ jobs:
       os: ${{ matrix.image.os }}
       image: ${{ matrix.image.code }}
       architecture: ${{ matrix.architecture }}
-      target_framework_array: needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS
+      target_framework_array: ${{needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS}}
       build_configuration: ${{ matrix.build_configuration }}
 
   ubuntu-macos-x64-mono:

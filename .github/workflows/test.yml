@@ -67,7 +67,7 @@ jobs:
       image: ${{matrix.image.code}}
       build_configuration: ${{matrix.build_configuration}}
       publish: ${{matrix.image.os == 'windows'}}
-      manual_build: ${{needs.variables.outputs.PREBUILD == 'true'}}
+      manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
 
   windows-dotnet:
     name: Windows .NET x86/x64
@@ -83,7 +83,7 @@ jobs:
       target_framework: ${{matrix.target_framework}}
       target_framework_array: ${{needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS}}
       build_configuration: ${{matrix.build_configuration}}
-      manual_build: ${{needs.variables.outputs.PREBUILD == 'true'}}
+      manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
 
   windows-framework:
     name: Windows .NET Framework x86/x64
@@ -100,7 +100,7 @@ jobs:
       target_framework: ${{matrix.target_framework}}
       target_framework_array: ${{needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS}}
       build_configuration: ${{matrix.build_configuration}}
-      manual_build: ${{needs.variables.outputs.PREBUILD == 'true'}}
+      manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
 
   windows-mono:
     name: Windows Mono x86/x64
@@ -117,7 +117,7 @@ jobs:
       target_framework: ${{matrix.target_framework}}
       target_framework_array: ${{needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS}}
       build_configuration: ${{matrix.build_configuration}}
-      manual_build: ${{needs.variables.outputs.PREBUILD == 'true'}}
+      manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
 
   ubuntu-macos-x64-dotnet:
     name: Ubuntu/MacOS .NET x64
@@ -137,7 +137,7 @@ jobs:
       target_framework: ${{matrix.target_framework }}
       target_framework_array: ${{needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS}}
       build_configuration: ${{matrix.build_configuration}}
-      manual_build: ${{needs.variables.outputs.PREBUILD == 'true'}}
+      manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
 
   ubuntu-macos-x64-mono:
     name: Ubuntu/MacOS Mono x64
@@ -157,7 +157,7 @@ jobs:
       target_framework: ${{matrix.target_framework}}
       target_framework_array: ${{needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS}}
       build_configuration: ${{matrix.build_configuration}}
-      manual_build: ${{needs.variables.outputs.PREBUILD == 'true'}}
+      manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
 
   ubuntu-arm64-dotnet:
     name: Ubuntu .NET arm64
@@ -174,7 +174,7 @@ jobs:
       #target_framework_array: ${{fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64)}}
       build_configuration: ${{ matrix.build_configuration }}
       run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=arm64'
-      #manual_build: ${{needs.variables.outputs.PREBUILD == 'true'}}
+      #manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
       experimental: true
 
   ubuntu-arm64-mono:
@@ -192,7 +192,7 @@ jobs:
       #target_framework_array: ${{fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS)}}
       build_configuration: ${{matrix.build_configuration}}
       run_settings_args: 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=arm64'
-      #manual_build: ${{needs.variables.outputs.PREBUILD == 'true'}}
+      #manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
       experimental: true
 
   macos-arm64-dotnet:
@@ -214,7 +214,7 @@ jobs:
       target_framework: ${{ matrix.target_framework }}
       target_framework_array: ${{fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64)}}
       build_configuration: ${{matrix.build_configuration}}
-      manual_build: ${{needs.variables.outputs.PREBUILD == 'true'}}
+      manual_build: ${{needs.variables.outputs.PREBUILD != 'true'}}
       experimental: true
 
   test-results:

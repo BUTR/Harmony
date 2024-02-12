@@ -60,15 +60,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup .NET Sdk
+        uses: actions/setup-dotnet@v4
+
       - name: Download Build Cache
         uses: ./.github/actions/test-build-cache
         if: ${{inputs.manual_build == false || inputs.manual_build == 'false'}}
         with:
           os: ${{inputs.os}}
           build_configuration: ${{inputs.build_configuration}}
-
-      - name: Setup .NET Sdk
-        uses: actions/setup-dotnet@v4
 
       - name: Test Mono ${{inputs.architecture}}
         uses: ./.github/actions/test-execute-test

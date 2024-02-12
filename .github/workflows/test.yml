@@ -20,6 +20,8 @@ env:
   PARALLEL: false
   # Right now we can't run experimental tests that can fail, since it will affect the PR
   EXPERIMENTAL: false
+  # Whether we should build the binaries before running the tests
+  PREBUILD: false
   
   # You are interested in changing these values
   BUILD_CONFIGURATIONS:                 "['ReleaseFat', 'ReleaseThin']"
@@ -36,6 +38,7 @@ jobs:
     outputs:
       PARALLEL: ${{env.PARALLEL}}
       EXPERIMENTAL: ${{env.EXPERIMENTAL}}
+      PREBUILD: ${{env.PREBUILD}}
       BUILD_CONFIGURATIONS: ${{env.BUILD_CONFIGURATIONS}}
       DOTNET_TARGET_FRAMEWORKS: ${{env.DOTNET_TARGET_FRAMEWORKS}}
       DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64: ${{env.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64}}
@@ -54,6 +57,7 @@ jobs:
   build-binaries:
     name: Build Binaries
     needs: variables
+    if: ${{needs.variables.outputs.PREBUILD == 'true'}}
     strategy:
       matrix:
         image: [ { os: 'windows', code: 'windows-latest' }, { os: 'ubuntu', code: 'ubuntu-latest' }, { os: 'macos', code: 'macos-13' }, { os: 'macos-arm64', code: 'macos-14' } ]

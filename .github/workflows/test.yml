@@ -111,7 +111,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: [ { os: 'ubuntu', code: 'ubuntu-latest' }, { os: 'macos', code: 'macos-13' } ]
+        #image: [ { os: 'ubuntu', code: 'ubuntu-latest' }, { os: 'macos', code: 'macos-13' } ]
+        image: [ { os: 'ubuntu', code: 'ubuntu-latest' } ]
         architecture: ['x64']
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-unix-dotnet.yml

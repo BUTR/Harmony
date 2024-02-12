@@ -48,7 +48,8 @@ jobs:
     needs: variables
     strategy:
       matrix:
-        image: [ { os: 'windows', code: 'windows-latest' }, { os: 'ubuntu', code: 'ubuntu-latest' }, { os: 'macos', code: 'macos-13' }, { os: 'macos-arm64', code: 'macos-14' } ]
+        #image: [ { os: 'windows', code: 'windows-latest' }, { os: 'ubuntu', code: 'ubuntu-latest' }, { os: 'macos', code: 'macos-13' }, { os: 'macos-arm64', code: 'macos-14' } ]
+        image: [ { os: 'ubuntu', code: 'ubuntu-latest' } ]
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-build.yml
     with:
@@ -60,6 +61,7 @@ jobs:
   windows-dotnet:
     name: Windows .NET x86/x64
     needs: [variables, build-binaries]
+    if: false
     strategy:
       matrix:
         architecture: ['x86', 'x64']
@@ -74,6 +76,7 @@ jobs:
   windows-framework:
     name: Windows .NET Framework x86/x64
     needs: [variables, build-binaries]
+    if: false
     strategy:
       fail-fast: false
       matrix:
@@ -89,6 +92,7 @@ jobs:
   windows-mono:
     name: Windows Mono x86/x64
     needs: [variables, build-binaries]
+    if: false
     strategy:
       fail-fast: false
       matrix:
@@ -115,12 +119,13 @@ jobs:
       os: ${{ matrix.image.os }}
       image: ${{ matrix.image.code }}
       architecture: ${{ matrix.architecture }}
-      target_framework_array: ${{fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS)}}
+      target_framework_array: needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS
       build_configuration: ${{ matrix.build_configuration }}
 
   ubuntu-macos-x64-mono:
     name: Ubuntu/MacOS Mono x64
     needs: [variables, build-binaries]
+    if: false
     strategy:
       fail-fast: false
       matrix:

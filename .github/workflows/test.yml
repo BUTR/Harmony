@@ -1,4 +1,4 @@
-name: Perform Testing ${{(env.PARALLEL && '(Parallel)') || ''}} ${{(env.PREBUILD && '(Prebuild)') || ''}} ${{(env.EXPERIMENTAL && '(Experimental)') || ''}}
+name: Perform Testing
 
 on:
   push:

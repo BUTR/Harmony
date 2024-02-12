@@ -19,10 +19,10 @@ runs:
       run: |
         $channels = '';
         $data = ConvertFrom-Json "${{inputs.target_framework_array}}";
-        foreach ($target_framework in $data) {
-            $channels = $channels + $target_framework.Replace('coreapp', '').Replace('net', '') + '/n';
-        }
+        
         "channels_multiline<<EOF" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
-        "$channels" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
+        foreach ($target_framework in $data) {
+            $target_framework.Replace('coreapp', '').Replace('net', '') | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
+        }
         "EOF" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
       shell: pwsh

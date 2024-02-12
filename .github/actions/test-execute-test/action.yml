@@ -85,7 +85,9 @@ runs:
         $target_frameworks = "${{inputs.target_framework_array}}";
         if ($target_frameworks -ne '') {
           foreach ($target_framework in ConvertFrom-Json $target_frameworks) {
-            dotnet test '"HarmonyTests/bin/Release/$target_framework/HarmonyTests.dll" -f $target_framework -l trx -l "console;verbosity=normal" --blame' -- ${{steps.test-args.outputs.run_settings_args}};
+            $path = '"' + "HarmonyTests/bin/Release/$target_framework/HarmonyTests.dll" + '"';
+            $arg = "$path -f $target_framework -l trx -l 'console;verbosity=normal' --blame";
+            dotnet test $arg -- ${{steps.test-args.outputs.run_settings_args}};
           }
         }
       shell: pwsh

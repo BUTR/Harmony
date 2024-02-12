@@ -33,7 +33,7 @@ runs:
     - name: Set Test Args
       id: test-args
       run: |
-        $run_settings_args = 'NUnit.DefaultTestNamePattern="{C}:{m}{a}" RunConfiguration.TargetPlatform=${{inputs.architecture}}'
+        $run_settings_args = 'NUnit.DefaultTestNamePattern='{C}:{m}{a}' RunConfiguration.TargetPlatform=${{inputs.architecture}}'
         "run_settings_args=$run_settings_args" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
         
         $vstest = '"HarmonyTests/bin/Release/${{inputs.target_framework}}/HarmonyTests.dll" --framework:${{inputs.target_framework}} --logger:trx --logger:"console;verbosity=normal" --blame';
@@ -86,8 +86,8 @@ runs:
         if ($target_frameworks -ne '') {
           foreach ($target_framework in ConvertFrom-Json $target_frameworks) {
             $path = '"' + "HarmonyTests/bin/Release/$target_framework/HarmonyTests.dll" + '"';
-            $arg = "$path -f $target_framework -l trx -l 'console;verbosity=normal' --blame";
-            dotnet test $arg -- ${{steps.test-args.outputs.run_settings_args}};
+            $arg = "$path -f $target_framework -l trx -l 'console;verbosity=normal' --blame -- ${{steps.test-args.outputs.run_settings_args}}";
+            dotnet test $arg;
           }
         }
       shell: pwsh

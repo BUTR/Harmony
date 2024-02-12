@@ -16,6 +16,11 @@ on:
   workflow_dispatch: 
 
 env:
+  # If set true, each target framework will be tested in a multiple job instead of a single job
+  PARALLEL: false
+  # Right now we can't run experimental tests that can fail, since it will affect the PR
+  EXPERIMENTAL: false
+  
   # You are interested in changing these values
   BUILD_CONFIGURATIONS:                 "['ReleaseFat', 'ReleaseThin']"
   DOTNET_TARGET_FRAMEWORKS:             "['netcoreapp3.0', 'netcoreapp3.1', 'net5.0', 'net6.0', 'net7.0', 'net8.0']"
@@ -29,6 +34,8 @@ jobs:
     name: Variable Accessibility Workaround for Jobs
     runs-on: ubuntu-latest
     outputs:
+      PARALLEL: ${{env.PARALLEL}}
+      EXPERIMENTAL: ${{env.EXPERIMENTAL}}
       BUILD_CONFIGURATIONS: ${{env.BUILD_CONFIGURATIONS}}
       DOTNET_TARGET_FRAMEWORKS: ${{env.DOTNET_TARGET_FRAMEWORKS}}
       DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64: ${{env.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64}}
@@ -36,6 +43,7 @@ jobs:
     steps:
       - name: Compute outputs
         run: |
+          echo "PARALLEL=${{env.PARALLEL}}" >> $GITHUB_OUTPUT
           echo "BUILD_CONFIGURATIONS=${{env.BUILD_CONFIGURATIONS}}" >> $GITHUB_OUTPUT
           echo "DOTNET_TARGET_FRAMEWORKS=${{env.DOTNET_TARGET_FRAMEWORKS}}" >> $GITHUB_OUTPUT
           echo "DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64=${{env.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64}}" >> $GITHUB_OUTPUT
@@ -63,7 +71,7 @@ jobs:
     strategy:
       matrix:
         architecture: ['x86', 'x64']
-        #target_framework: ${{fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS)}}
+        target_framework: ${{(needs.variables.outputs.PARALLEL == 'true' && fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS)) || ''}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-windows-dotnet.yml
     with:
@@ -79,7 +87,7 @@ jobs:
       fail-fast: false
       matrix:
         architecture: ['x86', 'x64']
-        #target_framework: ${{fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS)}}
+        target_framework: ${{(needs.variables.outputs.PARALLEL == 'true' && fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS)) || ''}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-windows-framework.yml
     with:
@@ -95,7 +103,7 @@ jobs:
       fail-fast: false
       matrix:
         architecture: ['x86', 'x64']
-        #target_framework: ${{fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS)}}
+        target_framework: ${{(needs.variables.outputs.PARALLEL == 'true' && fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS)) || ''}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-windows-mono.yml
     with:
@@ -112,7 +120,7 @@ jobs:
       matrix:
         image: [ { os: 'ubuntu', code: 'ubuntu-latest' }, { os: 'macos', code: 'macos-13' } ]
         architecture: ['x64']
-        #target_framework: ${{fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS)}}
+        target_framework: ${{(needs.variables.outputs.PARALLEL == 'true' && fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS)) || ''}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-unix-dotnet.yml
     with:
@@ -131,7 +139,7 @@ jobs:
       matrix:
         image: [ { os: 'ubuntu', code: 'ubuntu-latest' }, { os: 'macos', code: 'macos-13' } ]
         architecture: ['x64']
-        #target_framework: ${{fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS)}}
+        target_framework: ${{(needs.variables.outputs.PARALLEL == 'true' && fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS)) || ''}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-unix-mono.yml
     with:
@@ -145,11 +153,11 @@ jobs:
   ubuntu-arm64-dotnet:
     name: Ubuntu .NET arm64
     needs: [variables, build-binaries]
-    if: false
+    if: ${{needs.variables.outputs.EXPERIMENTAL == 'true'}}
     strategy:
       fail-fast: false
       matrix:
-        target_framework: ${{fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64)}}
+        target_framework: ${{(needs.variables.outputs.PARALLEL == 'true' && fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64)) || ''}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-qemu-dotnet.yml
     with:
@@ -162,11 +170,11 @@ jobs:
   ubuntu-arm64-mono:
     name: Ubuntu .NET arm64
     needs: [variables, build-binaries]
-    if: false
+    if: ${{needs.variables.outputs.EXPERIMENTAL == 'true'}}
     strategy:
       fail-fast: false
       matrix:
-        target_framework: ${{fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS) }}
+        target_framework: ${{(needs.variables.outputs.PARALLEL == 'true' && fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS)) || ''}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-qemu-mono.yml
     with:
@@ -179,13 +187,13 @@ jobs:
   macos-arm64-dotnet:
     name: MacOS .NET arm64
     needs: [variables, build-binaries]
-    if: false
+    if: ${{needs.variables.outputs.EXPERIMENTAL == 'true'}}
     strategy:
       fail-fast: false
       matrix:
         image: [ { os: 'macos-arm64', code: 'macos-14' } ]
         architecture: ['arm64']
-        #target_framework: ${{fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64)}}
+        target_framework: ${{(needs.variables.outputs.PARALLEL == 'true' && fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64)) || ''}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-unix-dotnet.yml
     with:
@@ -206,7 +214,7 @@ jobs:
   test-results-experimental:
     name: Download and Upload Test Results (Experimental)
     needs: [windows-dotnet, windows-framework, windows-mono, ubuntu-macos-x64-dotnet, ubuntu-macos-x64-mono, ubuntu-arm64-dotnet, ubuntu-arm64-mono, macos-arm64-dotnet]
-    if: false && always()
+    if: ${{needs.variables.outputs.EXPERIMENTAL == 'true' && always()}}
     uses: ./.github/workflows/test-result-upload.yml
     with:
       experimental: true
@@ -224,6 +232,6 @@ jobs:
         with:
           pattern: test-results-*
       - uses: joutvhu/delete-artifact@v2
-        if: false
+        if: ${{needs.variables.outputs.PARALLEL == 'true'}}
         with:
           pattern: experimental-test-results-*

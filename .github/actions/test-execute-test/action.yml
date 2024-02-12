@@ -22,6 +22,9 @@ inputs:
   build_configuration:
     description: 'The build configuration to use'
     required: true
+  do_build:
+    description: 'Whether to build manually before running the tests'
+    required: true
   upload_tests:
     description: 'Whether to upload the test results'
     required: true
@@ -49,6 +52,22 @@ runs:
         
         $dotnet = "-l trx -l 'console;verbosity=normal' --blame";
         "dotnet=$dotnet" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
+      shell: pwsh
+
+    - name: Build if required
+      if: ${{inputs.do_build == 'true'}}
+      run: |
+        $target_framework = "${{inputs.target_framework}}";
+        if ($target_framework -ne '') {
+          dotnet build HarmonyTests/HarmonyTests.csproj -c ${{inputs.build_configuration}} -f $target_framework;
+        }
+        
+        $target_frameworks = "${{inputs.target_framework_array}}";
+        if ($target_frameworks -ne '') {
+          foreach ($target_framework in ConvertFrom-Json $target_frameworks) {
+            dotnet build HarmonyTests/HarmonyTests.csproj -c ${{inputs.build_configuration}} -f $target_framework;
+          }
+        }
       shell: pwsh
 
     - name: Perform Tests Windows Mono

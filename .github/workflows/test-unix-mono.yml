@@ -27,6 +27,11 @@ on:
         required: true
         type: string
         description: 'The build configuration to use'
+      do_build:
+        required: false
+        type: boolean
+        default: true
+        description: 'Whether to build manually before running the tests'
       upload_tests:
         required: false
         type: boolean
@@ -57,6 +62,7 @@ jobs:
 
       - name: Download Build Cache
         uses: ./.github/actions/test-build-cache
+        if: ${{!inputs.do_build}}
         with:
           os: ${{inputs.os}}
           build_configuration: ${{inputs.build_configuration}}
@@ -73,5 +79,6 @@ jobs:
           target_framework: ${{inputs.target_framework}}
           target_framework_array: ${{inputs.target_framework_array}}
           build_configuration: ${{inputs.build_configuration}}
+          do_build: ${{inputs.do_build}}
           upload_tests: ${{inputs.upload_tests}}
           experimental: ${{inputs.experimental}}

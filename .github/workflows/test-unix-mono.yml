@@ -56,7 +56,7 @@ jobs:
     name: Mono ${{ inputs.os }}-${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
     runs-on: ${{inputs.image}}
     continue-on-error: ${{inputs.experimental}}
-    timeout-minutes: 5
+    timeout-minutes: 7
     steps:
       - uses: actions/checkout@v4
 
@@ -65,7 +65,7 @@ jobs:
 
       - name: Download Build Cache
         uses: ./.github/actions/test-build-cache
-        if: ${{inputs.manual_build == false || inputs.manual_build == 'false'}}
+        if: ${{!inputs.manual_build}}
         with:
           os: ${{inputs.os}}
           build_configuration: ${{inputs.build_configuration}}

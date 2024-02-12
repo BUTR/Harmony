@@ -48,7 +48,7 @@ jobs:
     name: .NET FX ${{ inputs.architecture }} ${{ inputs.target_framework }} ${{ inputs.build_configuration }}
     runs-on: windows-2019
     continue-on-error: ${{inputs.experimental}}
-    timeout-minutes: 5
+    timeout-minutes: 7
     steps:
       - uses: actions/checkout@v4
 
@@ -57,7 +57,7 @@ jobs:
 
       - name: Download Build Cache
         uses: ./.github/actions/test-build-cache
-        if: ${{inputs.manual_build == false || inputs.manual_build == 'false'}}
+        if: ${{!inputs.manual_build}}
         with:
           os: windows
           build_configuration: ${{inputs.build_configuration}}

@@ -77,11 +77,11 @@ runs:
     - name: Perform Tests Ubuntu/MacOS/MacOS-arm64 .NET/Mono
       if: ${{inputs.os == 'ubuntu' || inputs.os == 'macos' || inputs.os == 'macos-arm64'}}
       run: |
-        if ('${{inputs.target_framework}}' -neq '') {
+        if ("${{inputs.target_framework}}" -neq "") {
           dotnet test ${{steps.test-args.outputs.dotnet}} -- ${{steps.test-args.outputs.run_settings_args}};
         }
         
-        if ('${{inputs.target_framework_array}}' -neq '') {
+        if ("${{inputs.target_framework_array}}" -neq "") {
           $data = ConvertFrom-Json '${{inputs.target_framework_array}}';
           foreach ($target_framework in $data) {
             dotnet test '"HarmonyTests/bin/Release/$target_framework/HarmonyTests.dll" -f $target_framework -l trx -l "console;verbosity=normal" --blame' -- ${{steps.test-args.outputs.run_settings_args}};

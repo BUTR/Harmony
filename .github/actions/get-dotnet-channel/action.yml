@@ -22,5 +22,7 @@ runs:
         foreach ($target_framework in $data) {
             $channels = $channels + $target_framework.Replace('coreapp', '').Replace('net', '') + '/n';
         }
-        "channels_multiline=$channels" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
+        "channels_multiline<<EOF" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
+        "$channels" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
+        "EOF" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
       shell: pwsh

@@ -20,7 +20,7 @@ runs:
         $channels = '';
         $data = ConvertFrom-Json '${{inputs.target_framework}}';
         foreach ($target_framework in $data) {
-            $channels = $channels + $$target_framework.Replace('coreapp', '').Replace('net', '') + '/n';
+            $channels = $channels + $target_framework.Replace('coreapp', '').Replace('net', '') + '/n';
         }
         "channels_multiline=$channels" | Out-File -FilePath $env:GITHUB_OUTPUT -Append;
       shell: pwsh

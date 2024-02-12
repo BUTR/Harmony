@@ -27,7 +27,7 @@ on:
         required: true
         type: string
         description: 'The build configuration to use'
-      do_build:
+      manual_build:
         required: false
         type: boolean
         default: true
@@ -68,7 +68,7 @@ jobs:
 
       - name: Setup .NET ${{inputs.architecture}}
         uses: ./.github/actions/test-setup-dotnet
-        if: inputs.do_build != true
+        if: inputs.manual_build == false
         with:
           architecture: ${{inputs.architecture}}
           target_framework: ${{inputs.target_framework}}
@@ -83,6 +83,6 @@ jobs:
           target_framework: ${{inputs.target_framework}}
           target_framework_array: ${{inputs.target_framework_array}}
           build_configuration: ${{inputs.build_configuration}}
-          do_build: ${{inputs.do_build}}
+          manual_build: ${{inputs.manual_build}}
           upload_tests: ${{inputs.upload_tests}}
           experimental: ${{inputs.experimental}}

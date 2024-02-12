@@ -22,7 +22,7 @@ inputs:
   build_configuration:
     description: 'The build configuration to use'
     required: true
-  do_build:
+  manual_build:
     description: 'Whether to build manually before running the tests'
     required: true
   upload_tests:
@@ -55,7 +55,7 @@ runs:
       shell: pwsh
 
     - name: Build if required
-      if: ${{inputs.do_build == 'true'}}
+      if: ${{inputs.manual_build == 'true'}}
       run: |
         $target_framework = "${{inputs.target_framework}}";
         if ($target_framework -ne '') {

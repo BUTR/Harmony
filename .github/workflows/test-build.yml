@@ -39,7 +39,7 @@ jobs:
   build-output-cache:
     name: Upload Test Build Output Cache
     runs-on: ${{inputs.image}}
-    if: ${{!inputs.manual_build}}
+    if: ${{!inputs.manual_build && !inputs.publish}}
     steps:
       - uses: actions/checkout@v4
 

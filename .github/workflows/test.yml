@@ -16,12 +16,19 @@ on:
   workflow_dispatch: 
 
 env:
-  # If set true, each target framework will be tested in a multiple job instead of a single job
-  PARALLEL: false
   # Right now we can't run experimental tests that can fail, since it will affect the PR
+  # We could potentially exclude experimental build on PR and only run it on master push
   EXPERIMENTAL: false
+  # If set true, each target framework will be tested in it's own job instead of a single job
+  # NOTE: At some point when we'll have more target frameworks, parallelization should be more efficient
+  # It also will be more efficient once the `windows` workers will have a faster startup time
+  # METRICS:
+  # PARALLEL: true & PREBUILD: true ~ 15 minutes
+  # PARALLEL: false ~ 7 minutes
+  PARALLEL: true
   # Whether we should build the binaries before running the tests
-  PREBUILD: false
+  # Use with `PARALLEL: true` to reduce the execution time of test jobs, this increasing the throughput
+  PREBUILD: true
   
   # You are interested in changing these values
   BUILD_CONFIGURATIONS:                 "['ReleaseFat', 'ReleaseThin']"
@@ -36,8 +43,8 @@ jobs:
     name: Variable Accessibility Workaround for Jobs
     runs-on: ubuntu-latest
     outputs:
-      PARALLEL: ${{env.PARALLEL}}
       EXPERIMENTAL: ${{env.EXPERIMENTAL}}
+      PARALLEL: ${{env.PARALLEL}}
       PREBUILD: ${{env.PREBUILD}}
       BUILD_CONFIGURATIONS: ${{env.BUILD_CONFIGURATIONS}}
       DOTNET_TARGET_FRAMEWORKS: ${{env.DOTNET_TARGET_FRAMEWORKS}}
@@ -46,7 +53,9 @@ jobs:
     steps:
       - name: Compute outputs
         run: |
+          echo "EXPERIMENTAL=${{env.EXPERIMENTAL}}" >> $GITHUB_OUTPUT
           echo "PARALLEL=${{env.PARALLEL}}" >> $GITHUB_OUTPUT
+          echo "PREBUILD=${{env.PREBUILD}}" >> $GITHUB_OUTPUT
           echo "BUILD_CONFIGURATIONS=${{env.BUILD_CONFIGURATIONS}}" >> $GITHUB_OUTPUT
           echo "DOTNET_TARGET_FRAMEWORKS=${{env.DOTNET_TARGET_FRAMEWORKS}}" >> $GITHUB_OUTPUT
           echo "DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64=${{env.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64}}" >> $GITHUB_OUTPUT

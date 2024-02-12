@@ -62,13 +62,13 @@ jobs:
 
       - name: Download Build Cache
         uses: ./.github/actions/test-build-cache
+        if: ${{inputs.manual_build == false || inputs.manual_build == 'false'}}
         with:
           os: ${{inputs.os}}
           build_configuration: ${{inputs.build_configuration}}
 
       - name: Setup .NET ${{inputs.architecture}}
         uses: ./.github/actions/test-setup-dotnet
-        if: ${{!inputs.manual_build}}
         with:
           architecture: ${{inputs.architecture}}
           target_framework: ${{inputs.target_framework}}

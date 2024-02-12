@@ -62,7 +62,7 @@ jobs:
 
       - name: Download Build Cache
         uses: ./.github/actions/test-build-cache
-        if: ${{!inputs.manual_build}}
+        if: ${{inputs.manual_build == false || inputs.manual_build == 'false'}}
         with:
           os: ${{inputs.os}}
           build_configuration: ${{inputs.build_configuration}}

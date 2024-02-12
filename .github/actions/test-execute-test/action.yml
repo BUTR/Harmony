@@ -59,13 +59,13 @@ runs:
       run: |
         $target_framework = "${{inputs.target_framework}}";
         if ($target_framework -ne '') {
-          dotnet build HarmonyTests/HarmonyTests.csproj -c ${{inputs.build_configuration}} -f $target_framework;
+          dotnet build Harmony.sln -c ${{inputs.build_configuration}} -f $target_framework;
         }
         
         $target_frameworks = "${{inputs.target_framework_array}}";
         if ($target_frameworks -ne '') {
           foreach ($target_framework in ConvertFrom-Json $target_frameworks) {
-            dotnet build HarmonyTests/HarmonyTests.csproj -c ${{inputs.build_configuration}} -f $target_framework;
+            dotnet build Harmony.sln -c ${{inputs.build_configuration}} -f $target_framework;
           }
         }
       shell: pwsh

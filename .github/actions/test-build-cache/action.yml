@@ -8,17 +8,12 @@ inputs:
   build_configuration:
     description: 'The build configuration to use'
     required: true
-  build_was_done:
-    required: false
-    description: 'Whether the build was done'
-    default: 'true'
 
 runs:
   using: "composite"
   steps:
     - name: Download Build Cache
       uses: actions/download-artifact@v4
-      if: ${{inputs.build_was_done == 'true'}}
       with:
         name: build-output-${{inputs.os}}-${{inputs.build_configuration}}
         path: HarmonyTests/bin/

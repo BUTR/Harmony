@@ -75,7 +75,7 @@ jobs:
     strategy:
       matrix:
         architecture: ['x86', 'x64']
-        target_framework: ${{(needs.variables.outputs.PARALLEL == 'true' && fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS)) || ''}}
+        target_framework: ${{(needs.variables.outputs.PARALLEL == 'true' && fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS)) || ['']}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-windows-dotnet.yml
     with:
@@ -91,7 +91,7 @@ jobs:
       fail-fast: false
       matrix:
         architecture: ['x86', 'x64']
-        target_framework: ${{(needs.variables.outputs.PARALLEL == 'true' && fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS)) || ''}}
+        target_framework: ${{(needs.variables.outputs.PARALLEL == 'true' && fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS)) || ['']}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-windows-framework.yml
     with:
@@ -107,7 +107,7 @@ jobs:
       fail-fast: false
       matrix:
         architecture: ['x86', 'x64']
-        target_framework: ${{(needs.variables.outputs.PARALLEL == 'true' && fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS)) || ''}}
+        target_framework: ${{(needs.variables.outputs.PARALLEL == 'true' && fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS)) || ['']}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-windows-mono.yml
     with:
@@ -124,7 +124,7 @@ jobs:
       matrix:
         image: [ { os: 'ubuntu', code: 'ubuntu-latest' }, { os: 'macos', code: 'macos-13' } ]
         architecture: ['x64']
-        target_framework: ${{(needs.variables.outputs.PARALLEL == 'true' && fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS)) || ''}}
+        target_framework: ${{(needs.variables.outputs.PARALLEL == 'true' && fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS)) || ['']}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-unix-dotnet.yml
     with:
@@ -143,7 +143,7 @@ jobs:
       matrix:
         image: [ { os: 'ubuntu', code: 'ubuntu-latest' }, { os: 'macos', code: 'macos-13' } ]
         architecture: ['x64']
-        target_framework: ${{(needs.variables.outputs.PARALLEL == 'true' && fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS)) || ''}}
+        target_framework: ${{(needs.variables.outputs.PARALLEL == 'true' && fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS)) || ['']}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-unix-mono.yml
     with:
@@ -161,7 +161,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target_framework: ${{(needs.variables.outputs.PARALLEL == 'true' && fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64)) || ''}}
+        target_framework: ${{(needs.variables.outputs.PARALLEL == 'true' && fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64)) || ['']}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-qemu-dotnet.yml
     with:
@@ -178,7 +178,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target_framework: ${{(needs.variables.outputs.PARALLEL == 'true' && fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS)) || ''}}
+        target_framework: ${{(needs.variables.outputs.PARALLEL == 'true' && fromJson(needs.variables.outputs.FRAMEWORK_TARGET_FRAMEWORKS)) || ['']}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-qemu-mono.yml
     with:
@@ -197,7 +197,7 @@ jobs:
       matrix:
         image: [ { os: 'macos-arm64', code: 'macos-14' } ]
         architecture: ['arm64']
-        target_framework: ${{(needs.variables.outputs.PARALLEL == 'true' && fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64)) || ''}}
+        target_framework: ${{(needs.variables.outputs.PARALLEL == 'true' && fromJson(needs.variables.outputs.DOTNET_TARGET_FRAMEWORKS_MACOS_ARM64)) || ['']}}
         build_configuration: ${{fromJson(needs.variables.outputs.BUILD_CONFIGURATIONS)}}
     uses: ./.github/workflows/test-unix-dotnet.yml
     with:

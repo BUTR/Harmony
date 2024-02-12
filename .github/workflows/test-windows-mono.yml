@@ -76,6 +76,6 @@ jobs:
           target_framework: ${{inputs.target_framework}}
           target_framework_array: ${{inputs.target_framework_array}}
           build_configuration: ${{inputs.build_configuration}}
-          manual_build: ${{inputs.do_build}}
+          manual_build: ${{inputs.manual_build}}
           upload_tests: ${{inputs.upload_tests}}
           experimental: ${{inputs.experimental}}
